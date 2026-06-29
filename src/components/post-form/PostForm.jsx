@@ -73,9 +73,10 @@ function PostForm({post}) {
     },[watch,slugTransform,setValue])
 
 
-  return (
-    <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
-        <div className="w-2/3 px-2">
+    return (
+        <div className="rounded-2xl bg-white p-8 shadow-sm transform hover:-translate-y-1 transition-all">
+      <form onSubmit={handleSubmit(submit)} className="grid gap-8 lg:grid-cols-2">
+        <div className="px-2">
             <Input
                 label="Title :"
                 placeholder="Title"
@@ -93,7 +94,7 @@ function PostForm({post}) {
             />
             <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
         </div>
-        <div className="w-1/3 px-2">
+        <div className="px-2">
             <Input
                 label="Featured Image :"
                 type="file"
@@ -120,7 +121,8 @@ function PostForm({post}) {
                 {post ? "Update" : "Submit"}
             </Button>
         </div>
-    </form>
+      </form>
+    </div>
   )
 }
 export default PostForm

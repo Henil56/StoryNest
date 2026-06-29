@@ -20,7 +20,7 @@ function EditPost() {
         }
     },[slug,navigate])
   return post ? (
-    <div className='py-8'>
+    <div className='grid lg:grid-cols-2 gap-8'>
         <Container>
             <PostForm post={post} />
         </Container>

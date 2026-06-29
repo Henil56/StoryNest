@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import {data, Link,useNavigate} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {login} from '../store/authSlice'
 import {Button,Input,Logo} from './index'
 import authService from "../appwrite/auth"
@@ -30,25 +30,26 @@ function Signup() {
     }
 
   return (
-    <div className="flex items-center justify-center">
-        <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
-            <div className="mb-2 flex justify-center">
-                <span className="inline-block w-full max-w-25">
-                    <Logo width="100%" />
-                </span>
+    <div className="min-h-[80vh] flex items-center justify-center w-full">
+        <div className="mx-auto w-full max-w-md rounded-2xl shadow-xl bg-white p-8">
+            <div className="mb-3 flex items-center justify-center text-5xl">✨</div>
+            <div className="mb-4 flex justify-center">
+                <Logo size="large" alt="StoryNest logo" />
             </div>
-            <h2 className="text-center text-2xl font-bold leading-tight">Sign up to create account</h2>
-            <p className="mt-2 text-center text-base text-black/60">
-                Already have an account?&nbsp;
+            <h2 className="text-center text-3xl font-bold leading-tight">✨ Join StoryNest</h2>
+            <p className="mt-2 text-center text-base text-black/70">Create Account</p>
+            <p className="mt-4 text-center text-sm text-black/60">
+                Already have one?&nbsp;
                 <Link
                     to="/login"
-                    className="font-medium text-primary transition-all duration-200 hover:underline"
+                    className="font-medium text-primary transition-colors duration-200 hover:underline hover:text-indigo-600"
                 >
-                    Sign In
+                    Login
                 </Link>
             </p>
             {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-            <form onSubmit={handleSubmit(create)}>
+            <div className="rounded-2xl bg-white p-8 shadow-sm mt-8">
+              <form onSubmit={handleSubmit(create)}>
                 <div className='space-y-5'>
                     <Input
                     label="Full Name: "
@@ -79,11 +80,12 @@ function Signup() {
                     <Button type="submit" className="w-full">
                         Create Account
                     </Button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </form>
-        </div>
-    </div>
-  )
+    )
 }
 
 export default Signup

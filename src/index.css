@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:#f8fafc;
+  color:#111827;
+  font-family:Inter,system-ui,sans-serif;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+img{
+  display:block;
+  max-width:100%;
+}
+
+:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgb(79 70 229 / .35);
+}
