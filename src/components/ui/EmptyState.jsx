@@ -1,11 +1,12 @@
 import React from 'react'
 
-export default function EmptyState({ title, description }) {
+export default function EmptyState({ title, description, icon = '📚', action }) {
   return (
-    <div className="rounded-2xl border border-dashed border-gray-300 bg-white py-20 text-center">
-      <div className="text-6xl mb-5">📚</div>
-      <h2 className="text-2xl font-semibold">{title}</h2>
-      <p className="mt-4 text-gray-500">{description}</p>
+    <div className="rounded-2xl border border-dashed border-border bg-surface-elevated py-20 text-center animate-fade-in">
+      <div className="text-6xl mb-5" role="img" aria-hidden="true">{icon}</div>
+      <h2 className="text-2xl font-semibold text-text-primary">{title}</h2>
+      {description && <p className="mt-3 text-text-muted max-w-md mx-auto">{description}</p>}
+      {action && <div className="mt-6">{action}</div>}
     </div>
   )
 }

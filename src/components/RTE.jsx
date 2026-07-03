@@ -2,15 +2,14 @@ import React from 'react'
 import {Editor } from '@tinymce/tinymce-react';
 import {Controller } from 'react-hook-form';
 import conf from '../conf/conf.js';
-import Card from './ui/Card'
 
 
 export default function RTE({name, control, label, defaultValue =""}) {
   return (
     <div className='w-full'> 
-      <Card className="p-6">
-        {label && <label className='inline-block mb-1 pl-1'>{label}</label>}
+      {label && <label className='inline-block mb-1.5 pl-0.5 text-sm font-medium text-text-secondary'>{label}</label>}
 
+      <div className="rounded-xl overflow-hidden border border-border">
         <Controller
           name={name || "content"}
           control={control}
@@ -46,13 +45,13 @@ export default function RTE({name, control, label, defaultValue =""}) {
                 ],
                 toolbar:
                   "undo redo | blocks | image | bold italic forecolor | alignleft aligncenter bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent |removeformat | help",
-                content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }"
+                content_style: "body { font-family:Inter,Helvetica,Arial,sans-serif; font-size:15px; line-height:1.7; color:#334155; }"
               }}
               onEditorChange={onChange}
             />
           )}
         />
-      </Card>
+      </div>
     </div>
   )
 }

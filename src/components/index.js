@@ -1,4 +1,3 @@
-
 import Header from "./header/Header";
 import Footer from "./footer/Footer";
 import Container from "./container/Container";
@@ -13,6 +12,7 @@ import PostCard from "./PostCard"
 import AuthLayout from "./AuthLayout"
 import Input from "./Input";
 import Select from "./Select";
+import ThemeToggle from "./header/ThemeToggle";
 export{
     Header,
     Footer,
@@ -27,6 +27,7 @@ export{
     PostCard,
     AuthLayout,
     Input,
-    Select
+    Select,
+    ThemeToggle
     
 }

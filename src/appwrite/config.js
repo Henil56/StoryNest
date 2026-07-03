@@ -41,6 +41,8 @@ export class Service {
                     featuredImage,
                     status,
                     userId,
+                    views: 0,
+                    likes: [],
                 }
             });
         } catch (error) {
@@ -65,6 +67,48 @@ export class Service {
     } catch (error) {
         this._handleError('updatePost', error);
     }
+    }
+
+    async incrementView(slug, currentViews = 0) {
+        try {
+            return await this.tablesDB.updateRow({
+                databaseId: conf.appwriteDatabaseID,
+                tableId: conf.appwriteCollectionID,
+                rowId: slug,
+                data: {
+                    views: currentViews + 1
+                }
+            });
+        } catch (error) {
+            console.error('Failed to increment view:', error);
+            // Non-critical operation, so we don't throw
+        }
+    }
+
+    async toggleLike(slug, userId, currentLikes = []) {
+        try {
+            // Check if user already liked
+            const hasLiked = currentLikes.includes(userId);
+            
+            // Create new likes array (add or remove userId)
+            let newLikes;
+            if (hasLiked) {
+                newLikes = currentLikes.filter(id => id !== userId);
+            } else {
+                newLikes = [...currentLikes, userId];
+            }
+
+            return await this.tablesDB.updateRow({
+                databaseId: conf.appwriteDatabaseID,
+                tableId: conf.appwriteCollectionID,
+                rowId: slug,
+                data: {
+                    likes: newLikes
+                }
+            });
+        } catch (error) {
+            this._handleError('toggleLike', error);
+        }
     }
 
     async deletePost(slug) {
@@ -99,6 +143,24 @@ export class Service {
         });
         } catch (error) {
             this._handleError('getPost', error);
+        }
+    }
+
+    async subscribeNewsletter(email) {
+        try {
+            if (!conf.appwriteSubscribersCollectionID) {
+                throw new Error("Subscribers collection ID is not configured.");
+            }
+            return await this.tablesDB.createRow({
+                databaseId: conf.appwriteDatabaseID,
+                tableId: conf.appwriteSubscribersCollectionID,
+                rowId: ID.unique(),
+                data: {
+                    email: email,
+                }
+            });
+        } catch (error) {
+            this._handleError('subscribeNewsletter', error);
         }
     }
 

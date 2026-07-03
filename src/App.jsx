@@ -7,8 +7,6 @@ import { Outlet } from 'react-router-dom'
 import { Header,Footer } from './components'
 
 
-
-
 function App() {
   
   const [loading,setLoading]=useState(true)
@@ -26,17 +24,22 @@ function App() {
     .finally(()=>setLoading(false))
   },[])
 
-  return !loading? (
-    <div className='min-h-screen w-full'>
-      <div className="min-h-screen w-full bg-gray-50 flex flex-col">
+  return !loading ? (
+    <div className='min-h-screen w-full bg-surface flex flex-col'>
       <Header/>
       <main className="flex-1">
         <Outlet/>
       </main>
       <Footer/>
+    </div>
+  ) : (
+    <div className="min-h-screen flex items-center justify-center bg-surface">
+      <div className="flex flex-col items-center gap-4 animate-fade-in">
+        <div className="w-12 h-12 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+        <p className="text-sm font-medium text-text-muted">Loading StoryNest...</p>
       </div>
     </div>
-  ):null
+  )
 }
 
 export default App
