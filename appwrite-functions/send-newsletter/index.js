@@ -39,9 +39,12 @@ module.exports = async function ({ req, res, log, error }) {
 
   try {
     // 1. Fetch all subscribers
+    const databaseId = process.env.VITE_APPWRITE_DATABASE_ID || '69491b4400252d0c1973';
+    const collectionId = process.env.VITE_APPWRITE_SUBSCRIBERS_COLLECTION_ID || 'subscribers';
+    
     const subscribers = await databases.listDocuments(
-      process.env.VITE_APPWRITE_DATABASE_ID, 
-      process.env.VITE_APPWRITE_SUBSCRIBERS_COLLECTION_ID 
+      databaseId, 
+      collectionId 
     );
 
     if (subscribers.total === 0) {
