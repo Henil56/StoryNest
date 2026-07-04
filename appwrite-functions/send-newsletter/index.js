@@ -31,7 +31,7 @@ module.exports = async function ({ req, res, log, error }) {
 
   // Initialize Appwrite Client
   const client = new sdk.Client()
-    .setEndpoint('https://cloud.appwrite.io/v1') 
+    .setEndpoint(process.env.APPWRITE_FUNCTION_ENDPOINT || 'https://tor.cloud.appwrite.io/v1') 
     .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
     .setKey(process.env.APPWRITE_API_KEY);
 
