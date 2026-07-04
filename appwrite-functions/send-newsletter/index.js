@@ -16,7 +16,7 @@ const nodemailer = require('nodemailer');
 */
 
 module.exports = async function ({ req, res, log, error }) {
-  if (!req.variables.APPWRITE_FUNCTION_PROJECT_ID) {
+  if (!process.env.APPWRITE_FUNCTION_PROJECT_ID) {
     return res.json({ success: false, message: 'Missing project ID' });
   }
 
@@ -31,17 +31,17 @@ module.exports = async function ({ req, res, log, error }) {
 
   // Initialize Appwrite Client
   const client = new sdk.Client()
-    .setEndpoint('https://cloud.appwrite.io/v1') // Change if self-hosted
-    .setProject(req.variables.APPWRITE_FUNCTION_PROJECT_ID)
-    .setKey(req.variables.APPWRITE_API_KEY);
+    .setEndpoint('https://cloud.appwrite.io/v1') 
+    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
+    .setKey(process.env.APPWRITE_API_KEY);
 
   const databases = new sdk.Databases(client);
 
   try {
     // 1. Fetch all subscribers
     const subscribers = await databases.listDocuments(
-      req.variables.VITE_APPWRITE_DATABASE_ID, // Use your DB ID here
-      req.variables.VITE_APPWRITE_SUBSCRIBERS_COLLECTION_ID // Use your Subscribers Collection ID here
+      process.env.VITE_APPWRITE_DATABASE_ID, 
+      process.env.VITE_APPWRITE_SUBSCRIBERS_COLLECTION_ID 
     );
 
     if (subscribers.total === 0) {
@@ -51,12 +51,12 @@ module.exports = async function ({ req, res, log, error }) {
 
     // 2. Configure NodeMailer to send emails
     const transporter = nodemailer.createTransport({
-      host: req.variables.SMTP_HOST,
-      port: req.variables.SMTP_PORT,
-      secure: req.variables.SMTP_PORT == 465, // true for 465, false for other ports
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: process.env.SMTP_PORT == 465, 
       auth: {
-        user: req.variables.SMTP_USER,
-        pass: req.variables.SMTP_PASS,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
@@ -65,8 +65,8 @@ module.exports = async function ({ req, res, log, error }) {
 
     // 3. Send the email
     await transporter.sendMail({
-      from: `"StoryNest" <${req.variables.FROM_EMAIL}>`,
-      bcc: emails.join(', '), // Using bcc so subscribers don't see each other's emails
+      from: `"StoryNest" <${process.env.FROM_EMAIL}>`,
+      bcc: emails.join(', '), 
       subject: `New Story on StoryNest: ${eventData.title}`,
       text: `A new story titled "${eventData.title}" was just published on StoryNest! Log in to read it now.`,
       html: `
