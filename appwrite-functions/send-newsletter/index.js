@@ -98,8 +98,7 @@ module.exports = async function ({ req, res, log, error }) {
         <body>
           <div class="container">
             <div class="header" style="text-align: center;">
-              <img src="${siteUrl}/LOGO.png" alt="StoryNest Logo" style="height: 100px; width: auto; max-width: 100%; display: inline-block; vertical-align: middle; margin-right: 15px; pointer-events: none; user-select: none;">
-              <h1 style="display: inline-block; vertical-align: middle; color: #ffffff; margin: 0; font-size: 38px; font-weight: bold; letter-spacing: -0.5px;">StoryNest</h1>
+              <img src="${siteUrl}/LOGO.png" alt="StoryNest Logo" style="height: 140px; width: auto; max-width: 100%; display: inline-block; vertical-align: middle; pointer-events: none; user-select: none;">
             </div>
             <div class="content">
               <h2>A new story is waiting for you!</h2>
