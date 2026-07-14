@@ -195,6 +195,7 @@ function Home() {
                                 />
                                 <Button 
                                     type='submit' 
+                                    size='lg'
                                     className="bg-white text-primary-700 hover:bg-white/90 shadow-lg whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed transition-all"
                                     disabled={subscribeStatus === 'loading' || subscribeStatus === 'success'}
                                     loading={subscribeStatus === 'loading'}
