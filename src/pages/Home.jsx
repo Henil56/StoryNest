@@ -190,13 +190,13 @@ function Home() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Your email address" 
                                     required
-                                    className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-white/40 min-w-[250px]" 
+                                    className="bg-white/20 border-white/40 text-white placeholder:text-white/70 focus:bg-white/30 focus:border-white focus:ring-white/30 min-w-[250px] shadow-inner transition-all duration-300" 
                                     disabled={subscribeStatus === 'loading' || subscribeStatus === 'success'}
                                 />
                                 <Button 
                                     type='submit' 
                                     size='lg'
-                                    className="bg-white text-primary-700 hover:bg-white/90 shadow-lg whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+                                    className="bg-slate-900 text-white hover:bg-slate-800 hover:-translate-y-0.5 shadow-xl shadow-slate-900/20 whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-300 border border-slate-700"
                                     disabled={subscribeStatus === 'loading' || subscribeStatus === 'success'}
                                     loading={subscribeStatus === 'loading'}
                                 >
