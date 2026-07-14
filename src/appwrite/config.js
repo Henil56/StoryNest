@@ -149,6 +149,58 @@ export class Service {
         }
     }
 
+    // User Profile Services
+
+    async createUserProfile({ userId, username, profilePic }) {
+        try {
+            if (!conf.appwriteUsersCollectionID) throw new Error("Users collection ID is not configured.");
+            const data = { userId, username };
+            if (profilePic) data.profilePic = profilePic;
+            
+            return await this.databases.createDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteUsersCollectionID,
+                userId, // use userId as document ID for easy fetching
+                data
+            );
+        } catch (error) {
+            this._handleError('createUserProfile', error);
+        }
+    }
+
+    async getUserProfile(userId) {
+        try {
+            if (!conf.appwriteUsersCollectionID) return null;
+            return await this.databases.getDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteUsersCollectionID,
+                userId
+            );
+        } catch (error) {
+            // It's normal for a user not to have a profile yet (legacy users)
+            console.log("No public profile found for user:", userId);
+            return null;
+        }
+    }
+
+    async updateUserProfile(userId, { username, profilePic }) {
+        try {
+            if (!conf.appwriteUsersCollectionID) throw new Error("Users collection ID is not configured.");
+            const data = {};
+            if (username !== undefined) data.username = username;
+            if (profilePic !== undefined) data.profilePic = profilePic;
+
+            return await this.databases.updateDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteUsersCollectionID,
+                userId,
+                data
+            );
+        } catch (error) {
+            this._handleError('updateUserProfile', error);
+        }
+    }
+
     async subscribeNewsletter(email) {
         try {
             if (!conf.appwriteSubscribersCollectionID) {

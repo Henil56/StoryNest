@@ -28,12 +28,13 @@ export class AuthService {
             if (!email || !password) {
                 throw new Error('Email and password are required to create an account.');
             }
-            const userAccount = await this.account.create({
-                userId: ID.unique(),
-                email: email,
-                password: password,
-                name: name // optional
-            });
+            // Appwrite v13+ uses positional arguments
+            const userAccount = await this.account.create(
+                ID.unique(),
+                email,
+                password,
+                name
+            );
             if (userAccount) {
                 // create a session after signup and return it (keeps previous behaviour)
                 return await this.login({ email, password });

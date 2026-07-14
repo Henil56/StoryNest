@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { login } from '../store/authSlice'
 import { Button, Input, Logo } from './index'
 import authService from "../appwrite/auth"
+import appwriteService from "../appwrite/config"
 import { useForm } from "react-hook-form"
 import { useDispatch } from 'react-redux'
 
@@ -17,13 +18,38 @@ function Signup() {
         setError("")
         setLoading(true)
         try {
-            const userData = await authService.createAccount(data)
-            if (userData) {
+            // 1. Create account and session
+            const sessionData = await authService.createAccount({
+                email: data.email,
+                password: data.password,
+                name: data.username
+            })
+            
+            if (sessionData) {
                 const currentUser = await authService.getCurrentUser()
                 if (currentUser) {
+                    // 2. Upload Profile Picture if provided
+                    let profilePicId = null
+                    if (data.profilePic && data.profilePic[0]) {
+                        const file = await appwriteService.uploadFile(data.profilePic[0])
+                        if (file) {
+                            profilePicId = file.$id
+                        }
+                    }
+
+                    // 3. Create Public Profile Document
+                    await appwriteService.createUserProfile({
+                        userId: currentUser.$id,
+                        username: data.username,
+                        profilePic: profilePicId
+                    })
+
+                    // 4. Update Redux store and redirect
                     dispatch(login({ userData: currentUser }));
+                    navigate("/")
+                } else {
+                    navigate("/login")
                 }
-                navigate("/")
             }
         } catch (error) {
             setError(error.message)
@@ -74,15 +100,15 @@ function Signup() {
                     <form onSubmit={handleSubmit(create)} className="mt-8" noValidate>
                         <div className='space-y-5'>
                             <Input
-                                label="Full Name"
-                                placeholder="Enter your full name"
+                                label="Username"
+                                placeholder="Choose a username"
                                 required
-                                error={errors.name?.message}
-                                {...register("name", {
-                                    required: "Full name is required",
+                                error={errors.username?.message}
+                                {...register("username", {
+                                    required: "Username is required",
                                     minLength: {
-                                        value: 2,
-                                        message: "Name must be at least 2 characters"
+                                        value: 3,
+                                        message: "Username must be at least 3 characters"
                                     }
                                 })}
                             />
@@ -115,6 +141,21 @@ function Signup() {
                                     }
                                 })}
                             />
+                            
+                            <div>
+                                <label className="inline-flex items-center gap-1 mb-1.5 pl-0.5 text-sm font-medium text-text-secondary">
+                                    Profile Picture (Optional)
+                                </label>
+                                <div className="mt-1 rounded-xl border-2 border-dashed border-border hover:border-primary-300 transition-colors duration-200 p-4 text-center">
+                                    <input
+                                        type="file"
+                                        className="text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/40 dark:file:text-primary-300 cursor-pointer w-full"
+                                        accept="image/png, image/jpg, image/jpeg, image/gif"
+                                        {...register("profilePic")}
+                                    />
+                                </div>
+                            </div>
+
                             <Button
                                 type="submit"
                                 className="w-full"

@@ -13,6 +13,8 @@ export default function Post() {
     const { slug } = useParams();
     const navigate = useNavigate();
 
+    const [authorProfile, setAuthorProfile] = useState(null);
+
     const userData = useSelector((state) => state.auth.userData);
 
     const isAuthor = post && userData ? post.userId === userData.$id : false;
@@ -24,6 +26,11 @@ export default function Post() {
                     setPost(post);
                     // Increment view count when post is successfully fetched
                     appwriteService.incrementView(slug, post.views || 0);
+                    
+                    // Fetch author profile
+                    appwriteService.getUserProfile(post.userId).then((profile) => {
+                        if (profile) setAuthorProfile(profile);
+                    });
                 }
                 else navigate("/");
             });
@@ -67,6 +74,8 @@ export default function Post() {
 
     // Calculate reading time
     const readingTime = post ? Math.max(1, Math.ceil((post.content || '').replace(/<[^>]*>/g, '').split(/\s+/).length / 200)) : 0;
+
+    const displayAuthorName = authorProfile?.username || post?.authorName || 'Author';
 
     return post ? (
         <div className="animate-fade-in">
@@ -131,10 +140,18 @@ export default function Post() {
                             to={`/author/${post.userId}`}
                             className="flex items-center gap-2 hover:text-primary-600 transition-colors duration-200"
                         >
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
-                                {(post.authorName || post.userId || 'A').charAt(0).toUpperCase()}
-                            </div>
-                            <span className="font-medium">{post.authorName || 'Author'}</span>
+                            {authorProfile?.profilePic ? (
+                                <img 
+                                    src={appwriteService.getFilePreview(authorProfile.profilePic)} 
+                                    alt={displayAuthorName} 
+                                    className="w-8 h-8 rounded-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
+                                    {(displayAuthorName || 'A').charAt(0).toUpperCase()}
+                                </div>
+                            )}
+                            <span className="font-medium">{displayAuthorName}</span>
                         </Link>
 
                         <span className="text-text-muted">·</span>
