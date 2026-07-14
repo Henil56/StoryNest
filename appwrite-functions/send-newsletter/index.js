@@ -98,7 +98,7 @@ module.exports = async function ({ req, res, log, error }) {
         <body>
           <div class="container">
             <div class="header" style="text-align: center;">
-              <img src="${siteUrl}/LOGO.png" alt="StoryNest Logo" style="height: 140px; width: auto; max-width: 100%; display: inline-block; vertical-align: middle; pointer-events: none; user-select: none;">
+              <img src="https://tor.cloud.appwrite.io/v1/storage/buckets/69491daf002ac016e4b1/files/6a4b5ab100201c1a0ec9/view?project=694919cc00336c3aa021" alt="StoryNest Logo" style="height: 140px; width: auto; max-width: 100%; display: inline-block; vertical-align: middle; pointer-events: none; user-select: none;">
             </div>
             <div class="content">
               <h2>A new story is waiting for you!</h2>

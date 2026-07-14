@@ -9,11 +9,13 @@ import { useDispatch } from 'react-redux'
 function Login() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm()
+    const { register, handleSubmit, formState: { errors } } = useForm()
     const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const login = async (data) => {
         setError("")
+        setLoading(true)
         try {
             const session = await authService.login(data)
             if (session) {
@@ -25,6 +27,8 @@ function Login() {
             }
         } catch (error) {
             setError(error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -64,16 +68,20 @@ function Login() {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit(login)} className="mt-8">
+                    <form onSubmit={handleSubmit(login)} className="mt-8" noValidate>
                         <div className='space-y-5'>
                             <Input
                                 label="Email"
                                 placeholder="Enter your email"
                                 type="email"
+                                required
+                                error={errors.email?.message}
                                 {...register("email", {
-                                    required: true,
+                                    required: "Email is required",
                                     validate: {
-                                        matchPatern: (value) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) || "Email address must be a valid address",
+                                        matchPattern: (value) =>
+                                            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
+                                            "Please enter a valid email address",
                                     }
                                 })}
                             />
@@ -82,10 +90,26 @@ function Login() {
                                 label="Password"
                                 type="password"
                                 placeholder="Enter your password"
-                                {...register("password", { required: true })}
+                                required
+                                error={errors.password?.message}
+                                {...register("password", {
+                                    required: "Password is required",
+                                    minLength: {
+                                        value: 6,
+                                        message: "Password must be at least 6 characters"
+                                    }
+                                })}
                             />
 
-                            <Button type="submit" className="w-full" size="lg">Sign In</Button>
+                            <Button
+                                type="submit"
+                                className="w-full"
+                                size="lg"
+                                loading={loading}
+                                loadingText="Signing in..."
+                            >
+                                Sign In
+                            </Button>
                         </div>
                     </form>
                 </div>
