@@ -28,40 +28,40 @@ export class Service {
         throw err;
     }
 
-    async createPost({ title, slug, content, featuredImage, status, userId }) {
+    async createPost({ title, slug, content, featuredImage, status, userId, category, authorName }) {
         try {
+            const data = {
+                title,
+                slug,
+                content,
+                featuredImage,
+                status,
+                userId,
+                views: 0,
+                likes: [],
+            };
+            if (category) data.category = category;
+            if (authorName) data.authorName = authorName;
             return await this.databases.createDocument(
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
                 slug || ID.unique(),
-                {
-                    title,
-                    slug,
-                    content,
-                    featuredImage,
-                    status,
-                    userId,
-                    views: 0,
-                    likes: [],
-                }
+                data
             );
         } catch (error) {
             this._handleError('createPost', error);
         }
     }
 
-    async updatePost(slug, { title, content, featuredImage, status }) {
+    async updatePost(slug, { title, content, featuredImage, status, category }) {
         try {
+            const data = { title, content, featuredImage, status };
+            if (category !== undefined) data.category = category;
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
                 slug,
-                {
-                    title,
-                    content,
-                    featuredImage,
-                    status,
-                }
+                data
             );
         } catch (error) {
             this._handleError('updatePost', error);
@@ -134,6 +134,18 @@ export class Service {
             );
         } catch (error) {
             this._handleError('getPosts', error);
+        }
+    }
+
+    async getPostsByAuthor(userId) {
+        try {
+            return await this.databases.listDocuments(
+                conf.appwriteDatabaseID,
+                conf.appwriteCollectionID,
+                [Query.equal("userId", userId), Query.equal("status", "active")]
+            );
+        } catch (error) {
+            this._handleError('getPostsByAuthor', error);
         }
     }
 

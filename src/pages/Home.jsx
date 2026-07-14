@@ -149,11 +149,26 @@ function Home() {
                             icon="✍️" 
                         />
                     ) : (
-                        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-                            {posts.map((post) => (
-                                <PostCard key={post.$id} {...post} />
-                            ))}
-                        </div>
+                        <>
+                            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+                                {posts.slice(0, 8).map((post) => (
+                                    <PostCard key={post.$id} {...post} />
+                                ))}
+                            </div>
+                            {posts.length > 8 && (
+                                <div className="mt-10 text-center">
+                                    <Link
+                                        to="/all-post"
+                                        className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl border border-border text-primary-600 hover:bg-primary-50 hover:border-primary-200 dark:hover:bg-primary-900/30 dark:hover:text-primary-300 transition-all duration-200"
+                                    >
+                                        View All Stories
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                        </svg>
+                                    </Link>
+                                </div>
+                            )}
+                        </>
                     )}
                 </Container>
             </Section>

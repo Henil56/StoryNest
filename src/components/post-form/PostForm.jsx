@@ -5,6 +5,17 @@ import appwriteService from '../../appwrite/config'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
+const CATEGORIES = [
+    "Technology",
+    "Lifestyle",
+    "Travel",
+    "Food",
+    "Health",
+    "Education",
+    "Entertainment",
+    "Other",
+]
+
 function PostForm({ post }) {
 
     const { register, handleSubmit, watch, setValue, control, getValues, formState: { errors } } = useForm({
@@ -13,6 +24,7 @@ function PostForm({ post }) {
             slug: post?.slug || '',
             content: post?.content || '',
             status: post?.status || 'active',
+            category: post?.category || '',
         },
     })
 
@@ -44,7 +56,8 @@ function PostForm({ post }) {
                     data.featuredImage = fileId
                     const dbPost = await appwriteService.createPost({
                         ...data,
-                        userId: userData.$id
+                        userId: userData.$id,
+                        authorName: userData.name || userData.email || 'Anonymous',
                     })
                     if (dbPost) {
                         navigate(`/post/${dbPost.$id}`)
@@ -155,6 +168,12 @@ function PostForm({ post }) {
                             />
                         </div>
                     )}
+                    <Select
+                        options={CATEGORIES}
+                        label="Category"
+                        className=""
+                        {...register("category")}
+                    />
                     <Select
                         options={["active", "inactive"]}
                         label="Status"

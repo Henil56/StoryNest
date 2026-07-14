@@ -15,6 +15,7 @@ import EditPost from "./pages/EditPost.jsx";
 import Post from "./pages/Post.jsx";
 
 import AllPost from "./pages/AllPost.jsx";
+import AuthorPosts from "./pages/AuthorPosts.jsx";
 
 const router = createBrowserRouter([
   {
@@ -45,7 +46,6 @@ const router = createBrowserRouter([
             path: "/all-post",
             element: (
                 <AuthLayout authentication>
-                    {" "}
                     <AllPost />
                 </AuthLayout>
             ),
@@ -54,7 +54,6 @@ const router = createBrowserRouter([
             path: "/add-post",
             element: (
                 <AuthLayout authentication>
-                    {" "}
                     <AddPost />
                 </AuthLayout>
             ),
@@ -63,7 +62,6 @@ const router = createBrowserRouter([
             path: "/edit-post/:slug",
             element: (
                 <AuthLayout authentication>
-                    {" "}
                     <EditPost />
                 </AuthLayout>
             ),
@@ -71,6 +69,10 @@ const router = createBrowserRouter([
         {
             path: "/post/:slug",
             element: <Post />,
+        },
+        {
+            path: "/author/:authorId",
+            element: <AuthorPosts />,
         },
     ],
 },

@@ -4,9 +4,12 @@ import appwriteService from "../appwrite/config";
 import { Button, Container } from "../components";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 
 export default function Post() {
     const [post, setPost] = useState(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const { slug } = useParams();
     const navigate = useNavigate();
 
@@ -27,13 +30,19 @@ export default function Post() {
         } else navigate("/");
     }, [slug, navigate]);
 
-    const deletePost = () => {
-        appwriteService.deletePost(post.$id).then((status) => {
+    const deletePost = async () => {
+        setDeleting(true);
+        try {
+            const status = await appwriteService.deletePost(post.$id);
             if (status) {
                 appwriteService.deleteFile(post.featuredImage);
                 navigate("/");
             }
-        });
+        } catch (err) {
+            console.error("Delete failed:", err);
+            setDeleting(false);
+            setShowDeleteConfirm(false);
+        }
     };
 
     const handleLike = async () => {
@@ -56,8 +65,23 @@ export default function Post() {
         await appwriteService.toggleLike(post.$id, userData.$id, currentLikes);
     };
 
+    // Calculate reading time
+    const readingTime = post ? Math.max(1, Math.ceil((post.content || '').replace(/<[^>]*>/g, '').split(/\s+/).length / 200)) : 0;
+
     return post ? (
         <div className="animate-fade-in">
+            {/* Confirm Delete Dialog */}
+            <ConfirmDialog
+                open={showDeleteConfirm}
+                onConfirm={deletePost}
+                onCancel={() => setShowDeleteConfirm(false)}
+                title="Delete this story?"
+                message="This will permanently remove your story and its featured image. This action cannot be undone."
+                confirmText={deleting ? "Deleting..." : "Yes, delete"}
+                loading={deleting}
+                variant="danger"
+            />
+
             {/* Hero Image */}
             <div className="relative w-full max-h-[500px] overflow-hidden bg-slate-900">
                 <img
@@ -77,7 +101,7 @@ export default function Post() {
                                 </span>
                             </Button>
                         </Link>
-                        <Button variant="danger" bgColor="bg-rose-600" onClick={deletePost} className="shadow-lg">
+                        <Button variant="danger" bgColor="bg-rose-600" onClick={() => setShowDeleteConfirm(true)} className="shadow-lg">
                             <span className="flex items-center gap-2">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 Delete
@@ -90,10 +114,39 @@ export default function Post() {
             {/* Article Content */}
             <Container>
                 <article className="max-w-3xl mx-auto py-10 sm:py-16">
+                    {/* Category Badge */}
+                    {post.category && (
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 mb-4">
+                            {post.category}
+                        </span>
+                    )}
+
                     <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary leading-tight tracking-tight">
                         {post.title}
                     </h1>
                     
+                    {/* Author & Meta Bar */}
+                    <div className="mt-6 flex flex-wrap items-center gap-4 text-text-secondary text-sm">
+                        <Link 
+                            to={`/author/${post.userId}`}
+                            className="flex items-center gap-2 hover:text-primary-600 transition-colors duration-200"
+                        >
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
+                                {(post.authorName || post.userId || 'A').charAt(0).toUpperCase()}
+                            </div>
+                            <span className="font-medium">{post.authorName || 'Author'}</span>
+                        </Link>
+
+                        <span className="text-text-muted">·</span>
+
+                        <span className="flex items-center gap-1.5 text-text-muted">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {readingTime} min read
+                        </span>
+                    </div>
+
                     {/* Engagement Bar */}
                     <div className="mt-6 flex items-center gap-6 text-text-secondary">
                         <div className="flex items-center gap-2">
