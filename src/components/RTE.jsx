@@ -27,7 +27,6 @@ export default function RTE({name, control, label, defaultValue =""}) {
                   "autolink",
                   "lists",
                   "link",
-                  "image",
                   "charmap",
                   "preview",
                   "anchor",
@@ -38,10 +37,8 @@ export default function RTE({name, control, label, defaultValue =""}) {
                   "insertdatetime",
                   "media",
                   "table",
-                  "code",
                   "help",
                   "wordcount",
-                  "anchor",
                 ],
                 toolbar:
                   "undo redo | blocks | image | bold italic forecolor | alignleft aligncenter bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent |removeformat | help",

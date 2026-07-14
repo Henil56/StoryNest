@@ -1,10 +1,10 @@
 import conf from '../conf/conf.js';
-import { Client, Account, ID ,Databases,Storage,Query,TablesDB} from "appwrite";
+import { Client, ID, Databases, Storage, Query } from "appwrite";
 
 
 export class Service {
     client = new Client();
-    tablesDB;
+    databases;
     bucket;
 
     constructor() {
@@ -16,7 +16,7 @@ export class Service {
             .setEndpoint(conf.appwriteUrl)
             .setProject(conf.appwriteProjectID);
 
-        this.tablesDB = new TablesDB(this.client);
+        this.databases = new Databases(this.client);
         this.bucket = new Storage(this.client);
     }
 
@@ -30,11 +30,11 @@ export class Service {
 
     async createPost({ title, slug, content, featuredImage, status, userId }) {
         try {
-            return await this.tablesDB.createRow({
-                databaseId: conf.appwriteDatabaseID,
-                tableId: conf.appwriteCollectionID,
-                rowId: slug || ID.unique(),
-                data: {
+            return await this.databases.createDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteCollectionID,
+                slug || ID.unique(),
+                {
                     title,
                     slug,
                     content,
@@ -44,105 +44,96 @@ export class Service {
                     views: 0,
                     likes: [],
                 }
-            });
+            );
         } catch (error) {
             this._handleError('createPost', error);
         }
     }
-    
 
     async updatePost(slug, { title, content, featuredImage, status }) {
-    try {
-        return await this.tablesDB.updateRow({
-            databaseId: conf.appwriteDatabaseID,
-            tableId: conf.appwriteCollectionID,
-            rowId: slug,
-            data: {
-                title,
-                content,
-                featuredImage,
-                status,
-            }
-        });
-    } catch (error) {
-        this._handleError('updatePost', error);
-    }
+        try {
+            return await this.databases.updateDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteCollectionID,
+                slug,
+                {
+                    title,
+                    content,
+                    featuredImage,
+                    status,
+                }
+            );
+        } catch (error) {
+            this._handleError('updatePost', error);
+        }
     }
 
     async incrementView(slug, currentViews = 0) {
         try {
-            return await this.tablesDB.updateRow({
-                databaseId: conf.appwriteDatabaseID,
-                tableId: conf.appwriteCollectionID,
-                rowId: slug,
-                data: {
-                    views: currentViews + 1
-                }
-            });
+            return await this.databases.updateDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteCollectionID,
+                slug,
+                { views: currentViews + 1 }
+            );
         } catch (error) {
+            // Non-critical operation, do not throw
             console.error('Failed to increment view:', error);
-            // Non-critical operation, so we don't throw
         }
     }
 
     async toggleLike(slug, userId, currentLikes = []) {
         try {
-            // Check if user already liked
             const hasLiked = currentLikes.includes(userId);
-            
-            // Create new likes array (add or remove userId)
-            let newLikes;
-            if (hasLiked) {
-                newLikes = currentLikes.filter(id => id !== userId);
-            } else {
-                newLikes = [...currentLikes, userId];
-            }
+            const newLikes = hasLiked
+                ? currentLikes.filter(id => id !== userId)
+                : [...currentLikes, userId];
 
-            return await this.tablesDB.updateRow({
-                databaseId: conf.appwriteDatabaseID,
-                tableId: conf.appwriteCollectionID,
-                rowId: slug,
-                data: {
-                    likes: newLikes
-                }
-            });
+            return await this.databases.updateDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteCollectionID,
+                slug,
+                { likes: newLikes }
+            );
         } catch (error) {
             this._handleError('toggleLike', error);
         }
     }
 
     async deletePost(slug) {
-    try {
-        await this.tablesDB.deleteRow({
-            databaseId: conf.appwriteDatabaseID,
-            tableId: conf.appwriteCollectionID,
-            rowId: slug,
-        });
-        return true;
-    } catch (error) {
-        this._handleError('deletePost', error);
-    }
-    }
-    async getPost(slug){
         try {
-            return await this.tablesDB.getRow({
-                databaseId: conf.appwriteDatabaseID,
-                tableId: conf.appwriteCollectionID,
-                rowId: slug,
-        });
+            await this.databases.deleteDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteCollectionID,
+                slug
+            );
+            return true;
+        } catch (error) {
+            this._handleError('deletePost', error);
+        }
+    }
+
+    async getPost(slug) {
+        try {
+            return await this.databases.getDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteCollectionID,
+                slug
+            );
         } catch (error) {
             this._handleError('getPost', error);
         }
     }
-    async getPosts(queries=[Query.equal("status","active")]){
+
+    async getPosts(queries = [Query.equal("status", "active")]) {
         try {
-            return await this.tablesDB.listRows({
-                databaseId: conf.appwriteDatabaseID,
-                tableId: conf.appwriteCollectionID,
-                queries,
-        });
+            return await this.databases.listDocuments(
+                conf.appwriteDatabaseID,
+                conf.appwriteCollectionID,
+                queries
+            );
         } catch (error) {
-            this._handleError('getPost', error);
+            this._handleError('getPosts', error);
         }
     }
 
@@ -151,58 +142,56 @@ export class Service {
             if (!conf.appwriteSubscribersCollectionID) {
                 throw new Error("Subscribers collection ID is not configured.");
             }
-            return await this.tablesDB.createRow({
-                databaseId: conf.appwriteDatabaseID,
-                tableId: conf.appwriteSubscribersCollectionID,
-                rowId: ID.unique(),
-                data: {
-                    email: email,
-                }
-            });
+            return await this.databases.createDocument(
+                conf.appwriteDatabaseID,
+                conf.appwriteSubscribersCollectionID,
+                ID.unique(),
+                { email }
+            );
         } catch (error) {
             this._handleError('subscribeNewsletter', error);
         }
     }
 
-    //file upload servive
+    // File upload service
 
-    async uploadFile(file){
+    async uploadFile(file) {
         try {
-            const fileToUpload = file || (typeof document !== 'undefined' && document.getElementById('uploader')?.files?.[0]);
-            if (!fileToUpload) {
-                throw new Error('No file provided to upload. Pass a File to uploadFile(file) or provide an input#uploader in the DOM.');
+            if (!file) {
+                throw new Error('No file provided to upload.');
             }
-            return await this.bucket.createFile({             
-                bucketId: conf.appwriteBucketID,
-                fileId: ID.unique(),
-                file: file
-        })   
+            return await this.bucket.createFile(
+                conf.appwriteBucketID,
+                ID.unique(),
+                file
+            );
         } catch (error) {
             this._handleError('uploadFile', error);
         }
     }
-    async deleteFile(fileId){
+
+    async deleteFile(fileId) {
         try {
-            await this.bucket.deleteFile({
-                bucketId: conf.appwriteBucketID,
-                fileId: fileId
-            })
-            return true
+            await this.bucket.deleteFile(
+                conf.appwriteBucketID,
+                fileId
+            );
+            return true;
         } catch (error) {
             this._handleError('deleteFile', error);
         }
     }
-    getFilePreview(fileId){
+
+    getFilePreview(fileId) {
         try {
-            return this.bucket.getFileView({
-                bucketId: conf.appwriteBucketID,
-                fileId: fileId,
-            });
+            return this.bucket.getFileView(
+                conf.appwriteBucketID,
+                fileId
+            );
         } catch (error) {
             this._handleError('getFilePreview', error);
         }
     }
-    
 }
 
 const service = new Service();

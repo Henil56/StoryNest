@@ -14,22 +14,23 @@ function Home() {
     const isLoggedIn=useSelector((state)=>state.auth.status)
     const [email, setEmail] = useState('')
     const [subscribeStatus, setSubscribeStatus] = useState('idle')
+    const [subscribeError, setSubscribeError] = useState('')
 
     const handleSubscribe = async (e) => {
         e.preventDefault();
         if (!email) return;
         
         setSubscribeStatus('loading');
+        setSubscribeError('');
         try {
             await appwriteService.subscribeNewsletter(email);
             setSubscribeStatus('success');
             setEmail('');
-            setTimeout(() => setSubscribeStatus('idle'), 3000);
+            setTimeout(() => setSubscribeStatus('idle'), 4000);
         } catch (error) {
             console.error("Subscription failed:", error);
-            // Optionally set an error state here, but for now we can just reset
             setSubscribeStatus('idle');
-            alert("Failed to subscribe. Please make sure the Appwrite collection is configured.");
+            setSubscribeError('Failed to subscribe. Please try again.');
         }
     };
     useEffect(()=>{
@@ -38,7 +39,7 @@ function Home() {
             appwriteService.getPosts()
             .then((posts)=>{
                 if(posts){
-                    setPosts(posts.rows || [])
+                    setPosts(posts.documents || [])
                 }
             })
             .catch(()=>{
@@ -181,11 +182,18 @@ function Home() {
                                     type='submit' 
                                     className="bg-white text-primary-700 hover:bg-white/90 shadow-lg whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed transition-all"
                                     disabled={subscribeStatus === 'loading' || subscribeStatus === 'success'}
+                                    loading={subscribeStatus === 'loading'}
                                 >
-                                    {subscribeStatus === 'loading' ? 'Subscribing...' : subscribeStatus === 'success' ? 'Subscribed!' : 'Subscribe'}
+                                    {subscribeStatus === 'success' ? '✓ Subscribed!' : 'Subscribe'}
                                 </Button>
                             </form>
                         </div>
+                        {subscribeError && (
+                            <p className="mt-3 text-sm text-rose-200 flex items-center gap-1">
+                                <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"/></svg>
+                                {subscribeError}
+                            </p>
+                        )}
                     </div>
                 </Container>
             </Section>

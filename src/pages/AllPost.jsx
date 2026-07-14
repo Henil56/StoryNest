@@ -12,7 +12,7 @@ function AllPost() {
         if(isLoggedIn){
             appwriteService.getPosts([]).then((posts)=> {
                 if(posts){
-                    setPost(posts.rows ||[])
+                    setPost(posts.documents || [])
                 }
         }) 
     }else{
