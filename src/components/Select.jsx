@@ -3,6 +3,7 @@ import React, { useId, useState, useRef, useEffect } from 'react'
 function Select({
     options,
     label,
+    placeholder,
     className="",
     ...props
 }, ref) 
@@ -20,13 +21,13 @@ function Select({
     };
 
     useEffect(() => {
-        // Initialize selected value based on the native select or props (for react-hook-form defaultValues)
+        // Initialize selected value based on the native select or props
         if (internalRef.current && internalRef.current.value) {
             setSelected(internalRef.current.value);
-        } else if (options && options.length > 0) {
+        } else if (!placeholder && options && options.length > 0) {
             setSelected(options[0]);
         }
-    }, [options]);
+    }, [options, placeholder]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -68,6 +69,7 @@ function Select({
                     if (props.onChange) props.onChange(e);
                 }}
             >
+                {placeholder && <option value="" disabled hidden>{placeholder}</option>}
                 {options?.map((option) => (
                     <option key={option} value={option}>{option}</option>
                 ))}
@@ -79,7 +81,9 @@ function Select({
                 onClick={() => setIsOpen(!isOpen)}
                 className={`w-full px-4 py-3 rounded-xl border border-border bg-surface-elevated text-left text-text-primary outline-none transition-all duration-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 hover:border-border-hover appearance-none pr-10 relative ${className}`}
             >
-                <span className="block truncate">{selected || (options && options[0])}</span>
+                <span className={`block truncate ${!selected ? 'text-text-muted' : ''}`}>
+                    {selected || placeholder || (options && options[0])}
+                </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-text-muted">
                     <svg className={`w-5 h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />

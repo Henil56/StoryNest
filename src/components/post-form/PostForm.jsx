@@ -183,8 +183,9 @@ function PostForm({ post }) {
                     <Select
                         options={CATEGORIES}
                         label="Category"
+                        placeholder="Select Category"
                         className=""
-                        {...register("category")}
+                        {...register("category", { required: true })}
                     />
                     <Select
                         options={["active", "inactive"]}
