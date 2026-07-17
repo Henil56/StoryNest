@@ -25,6 +25,7 @@ export default function Post() {
 
     useEffect(() => {
         if (slug) {
+            window.scrollTo(0, 0);
             appwriteService.getPost(slug).then((post) => {
                 if (post) {
                     // Prevent double counting in StrictMode
