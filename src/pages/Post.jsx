@@ -22,8 +22,6 @@ export default function Post() {
 
     const isAuthor = post && userData ? post.userId === userData.$id : false;
 
-    const [scrollProgress, setScrollProgress] = useState(0);
-
     useEffect(() => {
         if (slug) {
             appwriteService.getPost(slug).then((post) => {
@@ -43,17 +41,6 @@ export default function Post() {
             });
         } else navigate("/");
     }, [slug, navigate]);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const totalScroll = document.documentElement.scrollTop;
-            const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scroll = `${(totalScroll / windowHeight) * 100}`;
-            setScrollProgress(scroll);
-        }
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     const deletePost = async () => {
         setDeleting(true);
@@ -98,10 +85,7 @@ export default function Post() {
     const displayAuthorName = authorProfile?.username || post?.authorName || 'Author';
 
     return post ? (
-        <div className="py-0 animate-fade-in relative pb-20">
-            {/* Reading Progress Bar */}
-            <div className="fixed top-0 left-0 h-1.5 bg-primary-500 z-[60] transition-all duration-150 ease-out shadow-[0_0_10px_rgba(70,130,180,0.8)] dark:shadow-[0_0_10px_rgba(236,72,153,0.8)]" style={{ width: `${scrollProgress}%` }}></div>
-
+        <div className="animate-fade-in">
             <Helmet>
                 <title>{post.title} | StoryNest</title>
                 <meta name="description" content={(post.content || '').replace(/<[^>]*>?/gm, '').substring(0, 160)} />
