@@ -102,10 +102,13 @@ module.exports = async function ({ req, res, log, error }) {
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                   <tr>
                     <td style="vertical-align: middle;">
-                      <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 200px; width: auto; display: block; border: none;">
+                      <!-- Div crops the bottom of the logo to remove baked-in text -->
+                      <div style="height: 120px; overflow: hidden;">
+                        <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 160px; width: auto; display: block; border: none;">
+                      </div>
                     </td>
-                    <td style="vertical-align: middle; padding-left: 0;">
-                      <span style="font-size: 40px; font-weight: bold; color: rgb(203, 197, 175); font-family: Georgia, 'Times New Roman', serif; letter-spacing: 0.5px; margin-left: -55px; display: inline-block; position: relative; z-index: 10;">StoryNest</span>
+                    <td style="vertical-align: middle; padding-left: 10px;">
+                      <span style="font-size: 40px; font-weight: bold; color: rgb(203, 197, 175); font-family: Georgia, 'Times New Roman', serif; letter-spacing: 0.5px; display: inline-block;">StoryNest</span>
                     </td>
                   </tr>
                 </table>
