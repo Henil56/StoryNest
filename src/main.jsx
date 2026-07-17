@@ -1,21 +1,39 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import { Provider } from 'react-redux'
 import store from './store/store.js'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
+import { AuthLayout } from './components/index.js'
+
+// Eagerly loaded components for fast initial paint
 import Home from './pages/Home.jsx'
-import { AuthLayout, Login } from './components/index.js'
 
-import AddPost from "./pages/AddPost.jsx";
-import Signup from './pages/Signup.jsx'
-import EditPost from "./pages/EditPost.jsx";
+// Lazy-loaded components
+const Login = React.lazy(() => import('./components/Login.jsx'))
+const Signup = React.lazy(() => import('./pages/Signup.jsx'))
+const AddPost = React.lazy(() => import('./pages/AddPost.jsx'))
+const EditPost = React.lazy(() => import('./pages/EditPost.jsx'))
+const Post = React.lazy(() => import('./pages/Post.jsx'))
+const AllPost = React.lazy(() => import('./pages/AllPost.jsx'))
+const AuthorPosts = React.lazy(() => import('./pages/AuthorPosts.jsx'))
+const Privacy = React.lazy(() => import('./pages/Privacy.jsx'))
+const Terms = React.lazy(() => import('./pages/Terms.jsx'))
+const Resources = React.lazy(() => import('./pages/Resources.jsx'))
+const NotFound = React.lazy(() => import('./pages/NotFound.jsx'))
+const OAuthCallback = React.lazy(() => import('./pages/OAuthCallback.jsx'))
 
-import Post from "./pages/Post.jsx";
-
-import AllPost from "./pages/AllPost.jsx";
-import AuthorPosts from "./pages/AuthorPosts.jsx";
+// Loading fallback
+const PageLoader = () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 animate-fade-in">
+            <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+            <p className="text-sm text-text-muted">Loading...</p>
+        </div>
+    </div>
+)
 
 const router = createBrowserRouter([
   {
@@ -27,10 +45,14 @@ const router = createBrowserRouter([
             element: <Home />,
         },
         {
+            path: "/oauth-callback",
+            element: <Suspense fallback={<PageLoader />}><OAuthCallback /></Suspense>,
+        },
+        {
             path: "/login",
             element: (
                 <AuthLayout authentication={false}>
-                    <Login />
+                    <Suspense fallback={<PageLoader />}><Login /></Suspense>
                 </AuthLayout>
             ),
         },
@@ -38,7 +60,7 @@ const router = createBrowserRouter([
             path: "/signup",
             element: (
                 <AuthLayout authentication={false}>
-                    <Signup />
+                    <Suspense fallback={<PageLoader />}><Signup /></Suspense>
                 </AuthLayout>
             ),
         },
@@ -46,7 +68,7 @@ const router = createBrowserRouter([
             path: "/all-post",
             element: (
                 <AuthLayout authentication>
-                    <AllPost />
+                    <Suspense fallback={<PageLoader />}><AllPost /></Suspense>
                 </AuthLayout>
             ),
         },
@@ -54,7 +76,7 @@ const router = createBrowserRouter([
             path: "/add-post",
             element: (
                 <AuthLayout authentication>
-                    <AddPost />
+                    <Suspense fallback={<PageLoader />}><AddPost /></Suspense>
                 </AuthLayout>
             ),
         },
@@ -62,26 +84,44 @@ const router = createBrowserRouter([
             path: "/edit-post/:slug",
             element: (
                 <AuthLayout authentication>
-                    <EditPost />
+                    <Suspense fallback={<PageLoader />}><EditPost /></Suspense>
                 </AuthLayout>
             ),
         },
         {
             path: "/post/:slug",
-            element: <Post />,
+            element: <Suspense fallback={<PageLoader />}><Post /></Suspense>,
         },
         {
             path: "/author/:authorId",
-            element: <AuthorPosts />,
+            element: <Suspense fallback={<PageLoader />}><AuthorPosts /></Suspense>,
         },
+        {
+            path: "/privacy",
+            element: <Suspense fallback={<PageLoader />}><Privacy /></Suspense>,
+        },
+        {
+            path: "/terms",
+            element: <Suspense fallback={<PageLoader />}><Terms /></Suspense>,
+        },
+        {
+            path: "/resources",
+            element: <Suspense fallback={<PageLoader />}><Resources /></Suspense>,
+        },
+        {
+            path: "*",
+            element: <Suspense fallback={<PageLoader />}><NotFound /></Suspense>,
+        }
     ],
 },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Provider store={store}>
-    <RouterProvider router={router}/>
-    </Provider>
+    <HelmetProvider>
+        <Provider store={store}>
+            <RouterProvider router={router}/>
+        </Provider>
+    </HelmetProvider>
   </React.StrictMode>,
 )

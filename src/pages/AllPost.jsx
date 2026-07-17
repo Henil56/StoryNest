@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Container, PostCard } from '../components'
-import appwriteService from "../appwrite/config"
 import { useSelector } from 'react-redux'
 import PageHeader from '../components/ui/PageHeader'
 import EmptyState from '../components/ui/EmptyState'
 import LoadingSkeleton from '../components/ui/LoadingSkeleton'
 import Pagination from '../components/ui/Pagination'
+import { useGetPostsQuery } from '../store/apiSlice'
 
 const CATEGORIES = [
     "All",
@@ -22,26 +22,14 @@ const CATEGORIES = [
 const POSTS_PER_PAGE = 12
 
 function AllPost() {
-    const [posts, setPosts] = useState([])
-    const [loading, setLoading] = useState(true)
+    const isLoggedIn = useSelector((state) => state.auth.status)
+    const { data: posts = [], isLoading: loading } = useGetPostsQuery(undefined, {
+        skip: !isLoggedIn,
+    })
+    
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedCategory, setSelectedCategory] = useState('All')
     const [currentPage, setCurrentPage] = useState(1)
-    const isLoggedIn = useSelector((state) => state.auth.status)
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            setLoading(true)
-            appwriteService.getPosts([]).then((posts) => {
-                if (posts) {
-                    setPosts(posts.documents || [])
-                }
-            }).finally(() => setLoading(false))
-        } else {
-            setPosts([])
-            setLoading(false)
-        }
-    }, [isLoggedIn])
 
     // Reset page when filters change
     useEffect(() => {

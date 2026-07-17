@@ -93,7 +93,7 @@ export default function ConfirmDialog({
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="px-4 py-2.5 text-sm font-medium rounded-xl border border-border text-text-secondary bg-surface-elevated hover:bg-slate-100 dark:hover:bg-surface-dark/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:opacity-50"
+            className="px-4 py-2.5 text-sm font-medium rounded-xl border border-border text-text-secondary bg-surface-elevated hover:bg-primary-50 dark:hover:bg-surface-dark/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:opacity-50"
           >
             {cancelText}
           </button>

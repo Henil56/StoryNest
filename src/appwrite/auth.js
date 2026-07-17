@@ -1,6 +1,6 @@
 import conf from '../conf/conf.js';
 
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, ID, OAuthProvider } from "appwrite";
 
 export class AuthService {
     client =new Client();
@@ -54,6 +54,20 @@ export class AuthService {
             this._handleError('login', error);
         }
     }
+    
+    loginWithGoogle() {
+        try {
+            // Note: window.location.origin dynamically gets the base URL (e.g., http://localhost:5173)
+            this.account.createOAuth2Session(
+                OAuthProvider.Google,
+                `${window.location.origin}/oauth-callback`, // Success URL
+                `${window.location.origin}/login` // Failure URL
+            );
+        } catch (error) {
+            this._handleError('loginWithGoogle', error);
+        }
+    }
+
     async getCurrentUser(){
         try {
             return await this.account.get();

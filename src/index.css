@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+@custom-variant dark (&:is(.dark *));
 /* ───────── Design Tokens (Tailwind v4 @theme) ───────── */
 @theme {
   --color-primary-50: var(--theme-primary-50);
@@ -15,8 +15,8 @@
 
   --color-surface: var(--theme-surface);
   --color-surface-elevated: var(--theme-surface-elevated);
-  --color-surface-dark: #0a0314;
-  --color-surface-dark-secondary: #110722;
+  --color-surface-dark: var(--theme-surface-dark);
+  --color-surface-dark-secondary: var(--theme-surface-dark-secondary);
 
   --color-text-primary: var(--theme-text-primary);
   --color-text-secondary: var(--theme-text-secondary);
@@ -37,25 +37,34 @@
 }
 
 :root {
-  --theme-primary-50: #EEF2FF;
-  --theme-primary-100: #E0E7FF;
-  --theme-primary-200: #C7D2FE;
-  --theme-primary-300: #A5B4FC;
-  --theme-primary-400: #818CF8;
-  --theme-primary-500: #6366F1;
-  --theme-primary-600: #4F46E5;
-  --theme-primary-700: #4338CA;
-  --theme-primary-800: #3730A3;
-  --theme-primary-900: #312E81;
+  /* ── Serene Sky Palette (Light Mode) ── */
+  /* Directly from colour chart: #F0F8FF → #B0E0E6 → #87CEEB → #4682B4 */
+  --theme-primary-50:  #E0F0FA;
+  --theme-primary-100: #B0E0E6;   /* powder blue — from chart            */
+  --theme-primary-200: #87CEEB;   /* sky blue — from chart               */
+  --theme-primary-300: #6BB8D9;
+  --theme-primary-400: #5199C5;
+  --theme-primary-500: #4682B4;   /* steel blue — from chart             */
+  --theme-primary-600: #3B72A0;
+  --theme-primary-700: #2F5C84;
+  --theme-primary-800: #234768;
+  --theme-primary-900: #17304D;
 
-  --theme-surface: #F8FAFC;
-  --theme-surface-elevated: #FFFFFF;
-  --theme-text-primary: #0F172A;
-  --theme-text-secondary: #475569;
-  --theme-text-muted: #94A3B8;
-  --theme-text-inverse: #F8FAFC;
-  --theme-border: #E2E8F0;
-  --theme-border-hover: #CBD5E1;
+  /* Surfaces: VISIBLE blue backgrounds, not white */
+  --theme-surface: #DAEDF8;            /* clearly light blue page bg      */
+  --theme-surface-elevated: #EAF4FB;   /* lighter blue for cards/modals   */
+  --theme-surface-dark: #17304D;       /* deep steel blue for footer      */
+  --theme-surface-dark-secondary: #234768;
+
+  /* Text */
+  --theme-text-primary:   #0D1B2A;
+  --theme-text-secondary: #2E4A62;
+  --theme-text-muted:     #5B8AAD;
+  --theme-text-inverse:   #F0F8FF;
+
+  /* Borders: visible powder-blue */
+  --theme-border:       #A8D4EE;
+  --theme-border-hover: #87CEEB;
 }
 
 :root.dark {
@@ -72,6 +81,8 @@
 
   --theme-surface: #0a0314;
   --theme-surface-elevated: #110722;
+  --theme-surface-dark: #0a0314;
+  --theme-surface-dark-secondary: #110722;
   --theme-text-primary: #F8FAFC;
   --theme-text-secondary: #CBD5E1;
   --theme-text-muted: #64748B;
@@ -126,7 +137,7 @@ img {
 /* ───────── Focus Ring ───────── */
 :focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 0 0 3px rgba(70, 130, 180, 0.4); /* steel blue #4682B4 */
   border-radius: 4px;
 }
 
@@ -140,12 +151,12 @@ img {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #87CEEB;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #4682B4;
 }
 
 :root.dark ::-webkit-scrollbar-thumb {
@@ -234,7 +245,7 @@ img {
 
 /* ───────── Shimmer Effect ───────── */
 .shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #DAEDF8 25%, #B0E0E6 50%, #DAEDF8 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

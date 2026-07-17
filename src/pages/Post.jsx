@@ -5,6 +5,7 @@ import { Button, Container } from "../components";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
+import { Helmet } from 'react-helmet-async';
 
 export default function Post() {
     const [post, setPost] = useState(null);
@@ -79,6 +80,10 @@ export default function Post() {
 
     return post ? (
         <div className="animate-fade-in">
+            <Helmet>
+                <title>{post.title} | StoryNest</title>
+                <meta name="description" content={post.content.replace(/<[^>]*>?/gm, '').substring(0, 160)} />
+            </Helmet>
             {/* Confirm Delete Dialog */}
             <ConfirmDialog
                 open={showDeleteConfirm}
@@ -147,7 +152,7 @@ export default function Post() {
                                     className="w-8 h-8 rounded-full object-cover"
                                 />
                             ) : (
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-xs font-bold">
                                     {(displayAuthorName || 'A').charAt(0).toUpperCase()}
                                 </div>
                             )}
@@ -167,7 +172,7 @@ export default function Post() {
                     {/* Engagement Bar */}
                     <div className="mt-6 flex items-center gap-6 text-text-secondary">
                         <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>

@@ -8,15 +8,19 @@ import LoadingSkeleton from '../components/ui/LoadingSkeleton'
 import Pagination from '../components/ui/Pagination'
 import { useSelector, useDispatch } from 'react-redux'
 import { login } from '../store/authSlice'
+import { useGetPostsByAuthorQuery } from '../store/apiSlice'
 
 const POSTS_PER_PAGE = 12
 
 export default function AuthorPosts() {
     const { authorId } = useParams()
     const dispatch = useDispatch()
-    const [posts, setPosts] = useState([])
+    const { data: posts = [], isLoading: loadingPosts } = useGetPostsByAuthorQuery(authorId, {
+        skip: !authorId,
+    })
+    
     const [authorProfile, setAuthorProfile] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [loadingProfile, setLoadingProfile] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
 
     // Edit Profile State
@@ -28,26 +32,24 @@ export default function AuthorPosts() {
 
     const currentUser = useSelector((state) => state.auth.userData)
     const isOwnProfile = currentUser?.$id === authorId
+    
+    const loading = loadingPosts || loadingProfile;
 
-    const fetchProfileAndPosts = async () => {
-        setLoading(true)
+    const fetchProfile = async () => {
+        setLoadingProfile(true)
         try {
-            const [fetchedPosts, profile] = await Promise.all([
-                appwriteService.getPostsByAuthor(authorId),
-                appwriteService.getUserProfile(authorId)
-            ])
-            if (fetchedPosts) setPosts(fetchedPosts.documents || [])
+            const profile = await appwriteService.getUserProfile(authorId)
             if (profile) setAuthorProfile(profile)
         } catch (error) {
-            console.error("Failed to fetch author data:", error)
+            console.error("Failed to fetch author profile:", error)
         } finally {
-            setLoading(false)
+            setLoadingProfile(false)
         }
     }
 
     useEffect(() => {
         if (authorId) {
-            fetchProfileAndPosts()
+            fetchProfile()
         }
     }, [authorId])
 
@@ -91,7 +93,7 @@ export default function AuthorPosts() {
             }
 
             // Fetch updated profile
-            await fetchProfileAndPosts()
+            await fetchProfile()
 
             // Update Redux state with new name if possible (optional)
             try {
@@ -164,9 +166,9 @@ export default function AuthorPosts() {
                                 <Button 
                                     type="button" 
                                     onClick={() => setIsEditing(false)} 
-                                    bgColor="bg-slate-200" 
-                                    textColor="text-slate-800"
-                                    className="hover:bg-slate-300"
+                                    bgColor="bg-primary-100" 
+                                    textColor="text-primary-800"
+                                    className="hover:bg-primary-200"
                                     disabled={editLoading}
                                 >
                                     Cancel
@@ -200,7 +202,7 @@ export default function AuthorPosts() {
                                     className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shadow-lg border-2 border-primary-100 dark:border-primary-900"
                                 />
                             ) : (
-                                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary-400 via-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold shadow-lg shadow-primary-500/20">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary-400 via-primary-500 to-primary-700 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold shadow-lg shadow-primary-500/20">
                                     {(displayAuthorName || authorId || 'A').charAt(0).toUpperCase()}
                                 </div>
                             )}

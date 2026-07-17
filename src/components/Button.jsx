@@ -32,7 +32,7 @@ export default function Button({
 
     const variants = {
         primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm hover:shadow-md',
-        secondary: 'bg-white dark:bg-surface-elevated text-primary-600 border border-border hover:border-border-hover hover:bg-primary-50 dark:hover:bg-primary-900/30 focus:ring-primary-200',
+        secondary: 'bg-surface-elevated dark:bg-surface-elevated text-primary-600 border border-border hover:border-border-hover hover:bg-primary-50 dark:hover:bg-primary-900/30 focus:ring-primary-200',
         danger: 'bg-danger text-white hover:bg-rose-700 focus:ring-rose-500 shadow-sm hover:shadow-md',
         success: 'bg-success text-white hover:bg-emerald-700 focus:ring-emerald-500 shadow-sm hover:shadow-md',
         outline: 'bg-transparent text-primary-600 border border-primary-600 hover:bg-primary-50 focus:ring-primary-500',

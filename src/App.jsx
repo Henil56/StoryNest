@@ -5,6 +5,7 @@ import authService from './appwrite/auth'
 import {login,logout} from "./store/authSlice"
 import { Outlet } from 'react-router-dom'
 import { Header,Footer } from './components'
+import { Toaster } from 'react-hot-toast'
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Outlet/>
       </main>
       <Footer/>
+      <Toaster position="bottom-right" />
     </div>
   ) : (
     <div className="min-h-screen flex items-center justify-center bg-surface">

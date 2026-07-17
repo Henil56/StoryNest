@@ -1,4 +1,4 @@
-import React,{useState,useEffect}from 'react'
+import React, { useState } from 'react'
 import appwriteService from "../appwrite/config"
 import { Container, PostCard, Input, Button } from '../components'
 import PageHeader from '../components/ui/PageHeader'
@@ -7,11 +7,15 @@ import EmptyState from '../components/ui/EmptyState'
 import LoadingSkeleton from '../components/ui/LoadingSkeleton'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
+import { useGetPostsQuery } from '../store/apiSlice'
 
 function Home() {
-    const [posts,setPosts]=useState([])
-    const [loading,setLoading]=useState(false)
-    const isLoggedIn=useSelector((state)=>state.auth.status)
+    const isLoggedIn = useSelector((state) => state.auth.status)
+    const { data: posts = [], isLoading: loading } = useGetPostsQuery(undefined, {
+        skip: !isLoggedIn,
+    })
+    
     const [email, setEmail] = useState('')
     const [subscribeStatus, setSubscribeStatus] = useState('idle')
     const [subscribeError, setSubscribeError] = useState('')
@@ -33,24 +37,6 @@ function Home() {
             setSubscribeError('Failed to subscribe. Please try again.');
         }
     };
-    useEffect(()=>{
-        setLoading(true)
-        if(isLoggedIn){
-            appwriteService.getPosts()
-            .then((posts)=>{
-                if(posts){
-                    setPosts(posts.documents || [])
-                }
-            })
-            .catch(()=>{
-                setPosts([])
-            })
-            .finally(()=>setLoading(false))
-        }else{
-            setPosts([])
-            setLoading(false)
-        }
-    },[isLoggedIn])
 
     // Calculate popularity score: views + (likes * 3)
     const sortedPosts = [...posts].sort((a, b) => {
@@ -64,11 +50,15 @@ function Home() {
 
     return (
         <div className='w-full'>
+            <Helmet>
+                <title>Home | StoryNest</title>
+                <meta name="description" content="Discover stories worth reading. Share ideas, inspire readers, and build your audience on StoryNest." />
+            </Helmet>
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-indigo-700 to-purple-800 dark:from-primary-900 dark:via-indigo-950 dark:to-purple-950 py-20 sm:py-28">
+            <section className="relative overflow-hidden bg-gradient-to-br from-[#4682B4] via-[#2F5C84] to-[#17304D] dark:from-primary-900 dark:via-indigo-950 dark:to-purple-950 py-20 sm:py-28">
                 <div className="absolute inset-0 opacity-20">
-                    <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-white/10 blur-3xl"></div>
-                    <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-purple-300/10 blur-3xl"></div>
+                    <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-[#87CEEB]/30 blur-3xl"></div>
+                    <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-[#B0E0E6]/20 blur-3xl"></div>
                 </div>
                 <Container>
                     <div className="relative z-10 max-w-3xl animate-slide-up">
@@ -84,7 +74,7 @@ function Home() {
                         </p>
                         <div className="mt-8 flex flex-wrap gap-4">
                             <Link to={isLoggedIn ? "/add-post" : "/login"}>
-                                <button className="inline-flex items-center gap-2 px-7 py-3.5 text-base font-semibold rounded-xl bg-white text-indigo-700 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200">
+                                <button className="inline-flex items-center gap-2 px-7 py-3.5 text-base font-semibold rounded-xl bg-[#B0E0E6] text-[#17304D] shadow-lg hover:shadow-xl hover:bg-[#87CEEB] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                     </svg>
@@ -127,7 +117,7 @@ function Home() {
             </Section>
 
             {/* Latest Stories Section */}
-            <Section className="bg-slate-50/50 dark:bg-surface-elevated/50">
+            <Section className="bg-[#C5E3F3] dark:bg-surface-elevated/50">
                 <Container>
                     <PageHeader title="Latest Stories" subtitle="Discover inspiring articles from creators around the world." />
                     {(!posts || posts.length === 0) && !isLoggedIn ? (
@@ -176,7 +166,7 @@ function Home() {
             {/* Newsletter Section */}
             <Section>
                 <Container>
-                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 to-indigo-700 p-8 sm:p-12 text-white">
+                    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#4682B4] to-[#234768] p-8 sm:p-12 text-white">
                         <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 blur-2xl -translate-y-1/2 translate-x-1/2"></div>
                         <div className='relative z-10 flex flex-col md:flex-row items-center gap-8'>
                             <div className='flex-1'>
@@ -196,7 +186,7 @@ function Home() {
                                 <Button 
                                     type='submit' 
                                     size='lg'
-                                    className="bg-slate-900 text-white hover:bg-slate-800 hover:-translate-y-0.5 shadow-xl shadow-slate-900/20 whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-300 border border-slate-700"
+                                    className="bg-[#17304D] text-white hover:bg-[#234768] hover:-translate-y-0.5 shadow-xl shadow-[#17304D]/30 whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-300 border border-[#2F5C84]"
                                     disabled={subscribeStatus === 'loading' || subscribeStatus === 'success'}
                                     loading={subscribeStatus === 'loading'}
                                 >

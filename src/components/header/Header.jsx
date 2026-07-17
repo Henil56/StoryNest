@@ -58,8 +58,8 @@ function Header() {
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'border-b border-border/50 bg-white/80 dark:bg-[#0F172A]/80 backdrop-blur-md shadow-sm' 
-          : 'border-b border-transparent bg-surface dark:bg-[#0F172A]'
+          ? 'border-b border-white/10 bg-[#17304D]/95 dark:border-border/50 dark:bg-[#0F172A]/80 backdrop-blur-md shadow-sm' 
+          : 'border-b border-transparent bg-[#17304D] dark:bg-[#0F172A]'
       }`}
     >
       <Container>
@@ -79,8 +79,8 @@ function Header() {
                       onClick={() => navigate(item.slug)}
                       className={`inline-block px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
                         pathname === item.slug
-                          ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 shadow-sm shadow-primary-500/10'
-                          : 'text-text-secondary hover:bg-slate-100/80 dark:hover:bg-surface-dark/50 hover:text-text-primary'
+                          ? 'bg-primary-500 text-white dark:bg-primary-900/30 dark:text-primary-300 shadow-sm shadow-primary-500/20'
+                          : 'text-white/80 hover:bg-white/10 hover:text-white dark:text-text-secondary dark:hover:bg-surface-dark/50 dark:hover:text-text-primary'
                       }`}
                     >
                       {item.name}
@@ -101,7 +101,7 @@ function Header() {
             <div className="flex md:hidden items-center gap-2">
                <ThemeToggle />
                <button
-                 className="p-2 -mr-2 text-text-secondary hover:text-text-primary hover:bg-slate-100 dark:hover:bg-surface-dark/50 rounded-lg transition-colors"
+                 className="p-2 -mr-2 text-white/80 hover:text-white hover:bg-white/10 dark:text-text-secondary dark:hover:text-text-primary dark:hover:bg-surface-dark/50 rounded-lg transition-colors"
                  onClick={() => setMobileOpen(!mobileOpen)}
                  aria-label="Toggle menu"
                  aria-expanded={mobileOpen}
@@ -128,8 +128,8 @@ function Header() {
                       onClick={() => { navigate(item.slug); setMobileOpen(false); }}
                       className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 ${
                         pathname === item.slug
-                          ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300'
-                          : 'text-text-secondary hover:bg-slate-100 dark:hover:bg-surface-dark/50 hover:text-text-primary'
+                          ? 'bg-primary-500 text-white dark:bg-primary-900/30 dark:text-primary-300'
+                          : 'text-white/80 hover:bg-white/10 hover:text-white dark:text-text-secondary dark:hover:bg-surface-dark/50 dark:hover:text-text-primary'
                       }`}
                     >
                       {item.name}
