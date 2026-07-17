@@ -102,9 +102,9 @@ module.exports = async function ({ req, res, log, error }) {
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                   <tr>
                     <td style="vertical-align: middle;">
-                      <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 90px; width: auto; display: block; border: none;">
+                      <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 120px; width: auto; display: block; border: none;">
                     </td>
-                    <td style="vertical-align: middle; padding-left: 15px;">
+                    <td style="vertical-align: middle; padding-left: 5px;">
                       <span style="font-size: 34px; font-weight: bold; color: rgb(203, 197, 175); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: 0.5px;">StoryNest</span>
                     </td>
                   </tr>
