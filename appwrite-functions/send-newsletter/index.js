@@ -97,15 +97,15 @@ module.exports = async function ({ req, res, log, error }) {
         </head>
         <body>
           <div class="container">
-            <div class="header" style="text-align: center; padding: 40px 20px;">
+            <div class="header" style="text-align: center; padding: 40px 10px;">
               <a href="https://story-nest-steel.vercel.app" style="text-decoration: none; display: inline-block; cursor: default;" onclick="return false;">
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                   <tr>
                     <td style="vertical-align: middle;">
-                      <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 150px; width: auto; display: block; border: none;">
+                      <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 200px; width: auto; display: block; border: none;">
                     </td>
-                    <td style="vertical-align: middle; padding-left: 0;">
-                      <span style="font-size: 40px; font-weight: bold; color: rgb(203, 197, 175); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: 0.5px; margin-left: -35px; display: inline-block;">StoryNest</span>
+                    <td style="vertical-align: middle; padding-left: 50px;">
+                      <span style="font-size: 40px; font-weight: bold; color: rgb(203, 197, 175); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: 0.5px;">StoryNest</span>
                     </td>
                   </tr>
                 </table>
