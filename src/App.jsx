@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import './App.css'
 import authService from './appwrite/auth'
 import {login,logout} from "./store/authSlice"
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { Header,Footer } from './components'
 import { Toaster } from 'react-hot-toast'
 
@@ -12,6 +12,12 @@ function App() {
   
   const [loading,setLoading]=useState(true)
   const dispatch=useDispatch()
+  const { pathname } = useLocation()
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
 
   useEffect(()=>{
     authService.getCurrentUser()
