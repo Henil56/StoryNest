@@ -103,26 +103,39 @@ export default function Post() {
             />
 
             {/* Hero Image Section */}
-            <div className="relative w-full h-[50vh] min-h-[400px] max-h-[600px] overflow-hidden bg-surface flex items-center justify-center">
-                {/* Blurred Background */}
-                <div 
-                    className="absolute inset-0 opacity-40 blur-3xl scale-110"
-                    style={{ 
-                        backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage)})`,
-                        backgroundPosition: 'center',
-                        backgroundSize: 'cover'
-                    }}
-                ></div>
+            <div className="relative w-full h-[50vh] min-h-[400px] max-h-[600px] flex items-center justify-center pt-10 perspective-[2000px]">
+                {/* Blurred Background Container */}
+                <div className="absolute inset-0 overflow-hidden bg-surface">
+                    <div 
+                        className="absolute inset-0 opacity-50 blur-xl scale-110 transition-all duration-700"
+                        style={{ 
+                            backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage)})`,
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover'
+                        }}
+                    ></div>
+                    {/* Gradient Overlay to blend with the page */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent pointer-events-none"></div>
+                </div>
                 
-                {/* Actual Image (Contain) */}
+                {/* Actual Image (3D Floating Effect) */}
                 <img
                     src={appwriteService.getFilePreview(post.featuredImage)}
                     alt={post.title}
-                    className="relative z-10 w-full h-full max-w-6xl object-contain p-4 sm:p-8 drop-shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
+                    className="relative z-10 max-w-[90%] md:max-w-4xl max-h-[85%] rounded-2xl object-cover transition-all duration-700 ease-out cursor-pointer"
+                    style={{
+                        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+                        transform: "perspective(1200px) rotateX(6deg) translateY(-20px) translateZ(40px)"
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = "perspective(1200px) rotateX(0deg) translateY(-30px) translateZ(80px) scale(1.02)";
+                        e.currentTarget.style.boxShadow = "0 35px 60px -15px rgba(0, 0, 0, 0.6)";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = "perspective(1200px) rotateX(6deg) translateY(-20px) translateZ(40px)";
+                        e.currentTarget.style.boxShadow = "0 25px 50px -12px rgba(0, 0, 0, 0.5)";
+                    }}
                 />
-
-                {/* Gradient Overlay to blend with the page */}
-                <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent z-20 pointer-events-none"></div>
                 
                 {/* Edit Button */}
                 {isAuthor && (
