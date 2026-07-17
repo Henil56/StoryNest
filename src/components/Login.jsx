@@ -26,7 +26,11 @@ function Login() {
                 navigate("/")
             }
         } catch (error) {
-            toast.error(error.message || 'Failed to login')
+            const isInvalidCredentials = error?.code === 401 || error?.message?.toLowerCase().includes('invalid credentials');
+            const errorMessage = isInvalidCredentials 
+                ? 'Authentication failed. Please verify your email and password, or create a new account.' 
+                : error.message || 'Failed to login';
+            toast.error(errorMessage, { duration: 4000 })
         } finally {
             setLoading(false)
         }
