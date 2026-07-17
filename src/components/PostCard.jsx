@@ -10,7 +10,7 @@ function stripHtml(input) {
   return input.replace(/<[^>]*>/g, '')
 }
 
-function PostCard({ $id, title, featuredImage, category, content, views, likes, userId }) {
+function PostCard({ $id, title, featuredImage, category, content, views, likes, userId, showDelete = false }) {
   const excerpt = stripHtml(content).substring(0, 120)
   const userData = useSelector((state) => state.auth.userData)
   const isAuthor = userData && userData.$id === userId
@@ -41,7 +41,7 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes, 
       <div className={`h-full flex flex-col rounded-2xl border border-[#A8D4EE] bg-surface-elevated shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-[#87CEEB]/30 hover:-translate-y-1 hover:border-[#87CEEB] ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}>
         
         {/* Delete Button for Author */}
-        {isAuthor && (
+        {isAuthor && showDelete && (
           <button 
             onClick={handleDelete} 
             disabled={isDeleting}

@@ -119,15 +119,7 @@ function Login() {
                             />
 
                             <div className="space-y-1">
-                                <div className="flex justify-between items-center">
-                                    <label className="text-sm font-medium text-text-primary">Password</label>
-                                    <Link 
-                                        to="/forgot-password" 
-                                        className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
-                                    >
-                                        Forgot Password?
-                                    </Link>
-                                </div>
+                                <label className="text-sm font-medium text-text-primary">Password</label>
                                 <Input
                                     type="password"
                                     placeholder="Enter your password"
@@ -141,6 +133,14 @@ function Login() {
                                         }
                                     })}
                                 />
+                                <div className="pt-1">
+                                    <Link 
+                                        to="/forgot-password" 
+                                        className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors inline-block"
+                                    >
+                                        Forgot Password?
+                                    </Link>
+                                </div>
                             </div>
 
                             <Button
