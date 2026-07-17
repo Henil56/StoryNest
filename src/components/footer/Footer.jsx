@@ -46,9 +46,8 @@ function Footer() {
               More
             </h3>
             <ul className="space-y-3">
-              <li><Link className="text-sm text-white/80 dark:text-slate-300 hover:text-white transition-colors duration-200" to="/privacy">Privacy</Link></li>
-              <li><Link className="text-sm text-white/80 dark:text-slate-300 hover:text-white transition-colors duration-200" to="/terms">Terms</Link></li>
-              <li><a className="text-sm text-white/80 dark:text-slate-300 hover:text-white transition-colors duration-200" href="https://github.com" target="_blank" rel="noreferrer">GitHub</a></li>
+              <li><a className="text-sm text-white/80 dark:text-slate-300 hover:text-white transition-colors duration-200" href="https://github.com/Henil56/StoryNest" target="_blank" rel="noreferrer">GitHub</a></li>
+              <li><a className="text-sm text-white/80 dark:text-slate-300 hover:text-white transition-colors duration-200" href="https://www.linkedin.com/in/henil-kukadiya" target="_blank" rel="noreferrer">LinkedIn</a></li>
             </ul>
           </div>
 
@@ -60,7 +59,6 @@ function Footer() {
             <ul className="space-y-3">
               <li><Link className="text-sm text-white/80 dark:text-slate-300 hover:text-white transition-colors duration-200" to="/terms">Terms & Conditions</Link></li>
               <li><Link className="text-sm text-white/80 dark:text-slate-300 hover:text-white transition-colors duration-200" to="/privacy">Privacy Policy</Link></li>
-              <li><Link className="text-sm text-white/80 dark:text-slate-300 hover:text-white transition-colors duration-200" to="/terms">Licensing</Link></li>
             </ul>
           </div>
         </div>
