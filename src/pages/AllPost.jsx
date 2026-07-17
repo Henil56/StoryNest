@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Container, PostCard } from '../components'
+import { Container, PostCard, Select } from '../components'
 import { useSelector } from 'react-redux'
 import PageHeader from '../components/ui/PageHeader'
 import EmptyState from '../components/ui/EmptyState'
@@ -31,6 +31,13 @@ const CATEGORIES = [
     "Other",
 ]
 
+const SORT_OPTIONS = [
+    "Latest",
+    "Oldest",
+    "Most Liked",
+    "Most Viewed"
+]
+
 const POSTS_PER_PAGE = 12
 
 function AllPost() {
@@ -41,12 +48,13 @@ function AllPost() {
     
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedCategory, setSelectedCategory] = useState('All')
+    const [sortBy, setSortBy] = useState('Latest')
     const [currentPage, setCurrentPage] = useState(1)
 
     // Reset page when filters change
     useEffect(() => {
         setCurrentPage(1)
-    }, [searchQuery, selectedCategory])
+    }, [searchQuery, selectedCategory, sortBy])
 
     // Filter posts by search & category
     const filteredPosts = useMemo(() => {
@@ -66,8 +74,19 @@ function AllPost() {
             )
         }
 
+        // Sort
+        if (sortBy === 'Latest') {
+            result.sort((a, b) => new Date(b.$createdAt) - new Date(a.$createdAt))
+        } else if (sortBy === 'Oldest') {
+            result.sort((a, b) => new Date(a.$createdAt) - new Date(b.$createdAt))
+        } else if (sortBy === 'Most Liked') {
+            result.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0))
+        } else if (sortBy === 'Most Viewed') {
+            result.sort((a, b) => (b.views || 0) - (a.views || 0))
+        }
+
         return result
-    }, [posts, searchQuery, selectedCategory])
+    }, [posts, searchQuery, selectedCategory, sortBy])
 
     // Pagination
     const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
@@ -124,16 +143,21 @@ function AllPost() {
                         )}
                     </div>
 
-                    {/* Category Filter */}
-                    <select
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="px-4 py-3 rounded-xl border border-border bg-surface-elevated text-text-primary outline-none transition-all duration-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 hover:border-border-hover text-sm appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%2394A3B8%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.23%207.21a.75.75%200%20011.06.02L10%2011.168l3.71-3.938a.75.75%200%20111.08%201.04l-4.25%204.5a.75.75%200%2001-1.08%200l-4.25-4.5a.75.75%200%2001.02-1.06z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:20px] bg-[position:right_12px_center] bg-no-repeat pr-10 min-w-[160px]"
-                    >
-                        {CATEGORIES.map(cat => (
-                            <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                    </select>
+                    {/* Category and Sort Filters */}
+                    <div className="flex gap-4 max-sm:w-full overflow-x-auto min-w-max pb-2 sm:pb-0">
+                        <Select
+                            options={CATEGORIES}
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            className="min-w-[150px]"
+                        />
+                        <Select
+                            options={SORT_OPTIONS}
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="min-w-[150px]"
+                        />
+                    </div>
                 </div>
 
                 {/* Results count */}
