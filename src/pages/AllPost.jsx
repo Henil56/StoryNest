@@ -144,7 +144,7 @@ function AllPost() {
                     </div>
 
                     {/* Category and Sort Filters */}
-                    <div className="flex gap-4 max-sm:w-full overflow-x-auto min-w-max pb-2 sm:pb-0">
+                    <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                         <Select
                             options={CATEGORIES}
                             value={selectedCategory}
