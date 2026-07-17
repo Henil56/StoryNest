@@ -105,7 +105,7 @@ module.exports = async function ({ req, res, log, error }) {
                       <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 200px; width: auto; display: block; border: none;">
                     </td>
                     <td style="vertical-align: middle; padding-left: 0;">
-                      <span style="font-size: 40px; font-weight: bold; color: rgb(203, 197, 175); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: 0.5px; margin-left: -90px; display: inline-block; position: relative; z-index: 10;">StoryNest</span>
+                      <span style="font-size: 40px; font-weight: bold; color: rgb(203, 197, 175); font-family: Georgia, 'Times New Roman', serif; letter-spacing: 0.5px; margin-left: -55px; display: inline-block; position: relative; z-index: 10;">StoryNest</span>
                     </td>
                   </tr>
                 </table>
