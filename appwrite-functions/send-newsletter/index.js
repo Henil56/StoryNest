@@ -97,10 +97,18 @@ module.exports = async function ({ req, res, log, error }) {
         </head>
         <body>
           <div class="container">
-            <div class="header" style="text-align: center;">
-              <a href="https://story-nest-steel.vercel.app" style="text-decoration: none; color: white; display: inline-block; cursor: default;" onclick="return false;">
-                <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 120px; width: auto; max-width: 100%; display: inline-block; vertical-align: middle; border: none;">
-                <span style="font-size: 28px; font-weight: bold; vertical-align: middle; margin-left: 15px; font-family: sans-serif;">StoryNest</span>
+            <div class="header" style="text-align: center; padding: 40px 20px;">
+              <a href="https://story-nest-steel.vercel.app" style="text-decoration: none; display: inline-block; cursor: default;" onclick="return false;">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                  <tr>
+                    <td style="vertical-align: middle;">
+                      <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 90px; width: auto; display: block; border: none;">
+                    </td>
+                    <td style="vertical-align: middle; padding-left: 15px;">
+                      <span style="font-size: 34px; font-weight: bold; color: rgb(203, 197, 175); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: 0.5px;">StoryNest</span>
+                    </td>
+                  </tr>
+                </table>
               </a>
             </div>
             <div class="content">
