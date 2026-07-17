@@ -104,8 +104,16 @@ module.exports = async function ({ req, res, log, error }) {
                     <td style="vertical-align: middle;">
                       <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 100px; width: auto; display: block; border: none;">
                     </td>
-                    <td style="vertical-align: middle; padding-left: 20px;">
-                      <span style="font-size: 40px; font-weight: bold; color: rgb(203, 197, 175); font-family: Georgia, 'Times New Roman', serif; letter-spacing: 0.5px; display: inline-block;">StoryNest</span>
+                    <td style="vertical-align: middle; padding-left: 20px; text-align: center;">
+                      <div style="font-size: 42px; font-weight: normal; color: rgb(203, 197, 175); font-family: Georgia, 'Times New Roman', serif; letter-spacing: 1px; line-height: 1;">StoryNest</div>
+                      <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 8px 0;">
+                        <tr>
+                          <td width="45%" style="border-bottom: 1px solid #a88b4a; font-size: 1px; line-height: 1px;">&nbsp;</td>
+                          <td width="10%" align="center" style="color: #a88b4a; font-size: 12px; line-height: 1px; padding: 0 4px;">&bull;</td>
+                          <td width="45%" style="border-bottom: 1px solid #a88b4a; font-size: 1px; line-height: 1px;">&nbsp;</td>
+                        </tr>
+                      </table>
+                      <div style="font-size: 16px; font-weight: normal; color: #a88b4a; font-family: Georgia, 'Times New Roman', serif; letter-spacing: 1.5px;">Publish Your Thoughts.</div>
                     </td>
                   </tr>
                 </table>
