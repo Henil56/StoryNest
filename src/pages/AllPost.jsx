@@ -58,7 +58,7 @@ function AllPost() {
 
     // Filter posts by search & category
     const filteredPosts = useMemo(() => {
-        let result = posts
+        let result = [...posts]
 
         // Filter by category
         if (selectedCategory !== 'All') {
