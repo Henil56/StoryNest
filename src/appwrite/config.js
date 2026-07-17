@@ -125,7 +125,7 @@ export class Service {
         }
     }
 
-    async getPosts(queries = [Query.equal("status", "active")]) {
+    async getPosts(queries = [Query.equal("status", "active"), Query.limit(100), Query.orderDesc("$createdAt")]) {
         try {
             return await this.databases.listDocuments(
                 conf.appwriteDatabaseID,
@@ -142,7 +142,7 @@ export class Service {
             return await this.databases.listDocuments(
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
-                [Query.equal("userId", userId), Query.equal("status", "active")]
+                [Query.equal("userId", userId), Query.equal("status", "active"), Query.limit(100), Query.orderDesc("$createdAt")]
             );
         } catch (error) {
             this._handleError('getPostsByAuthor', error);
