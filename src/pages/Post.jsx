@@ -102,19 +102,33 @@ export default function Post() {
                 variant="danger"
             />
 
-            {/* Hero Image */}
-            <div className="relative w-full max-h-[500px] overflow-hidden bg-slate-900">
+            {/* Hero Image Section */}
+            <div className="relative w-full h-[50vh] min-h-[400px] max-h-[600px] overflow-hidden bg-surface flex items-center justify-center">
+                {/* Blurred Background */}
+                <div 
+                    className="absolute inset-0 opacity-40 blur-3xl scale-110"
+                    style={{ 
+                        backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage)})`,
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover'
+                    }}
+                ></div>
+                
+                {/* Actual Image (Contain) */}
                 <img
                     src={appwriteService.getFilePreview(post.featuredImage)}
                     alt={post.title}
-                    className="w-full h-full object-cover opacity-90"
+                    className="relative z-10 w-full h-full max-w-6xl object-contain p-4 sm:p-8 drop-shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                {/* Gradient Overlay to blend with the page */}
+                <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent z-20 pointer-events-none"></div>
                 
+                {/* Edit Button */}
                 {isAuthor && (
-                    <div className="absolute right-6 top-6 flex gap-3">
+                    <div className="absolute right-6 top-6 flex gap-3 z-30">
                         <Link to={`/edit-post/${post.$id}`}>
-                            <Button variant="success" bgColor="bg-emerald-600" className="shadow-lg">
+                            <Button variant="success" bgColor="bg-emerald-600" className="shadow-lg backdrop-blur-md bg-emerald-600/90 hover:bg-emerald-600">
                                 <span className="flex items-center gap-2">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                     Edit
