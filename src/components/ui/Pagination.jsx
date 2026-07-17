@@ -36,11 +36,16 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
 
   const pages = getPageNumbers()
 
+  const handlePageChange = (newPage) => {
+    onPageChange(newPage)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <nav className="flex items-center justify-center gap-1.5 mt-12" aria-label="Pagination">
       {/* Previous */}
       <button
-        onClick={() => onPageChange(currentPage - 1)}
+        onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-xl border border-border text-text-secondary hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 dark:hover:bg-primary-900/30 dark:hover:text-primary-300 transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none"
         aria-label="Previous page"
@@ -63,7 +68,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         ) : (
           <button
             key={page}
-            onClick={() => onPageChange(page)}
+            onClick={() => handlePageChange(page)}
             className={`w-10 h-10 flex items-center justify-center text-sm font-medium rounded-xl transition-all duration-200 ${
               page === currentPage
                 ? 'bg-primary-600 text-white shadow-sm shadow-primary-500/30'
@@ -79,7 +84,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
 
       {/* Next */}
       <button
-        onClick={() => onPageChange(currentPage + 1)}
+        onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-xl border border-border text-text-secondary hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 dark:hover:bg-primary-900/30 dark:hover:text-primary-300 transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none"
         aria-label="Next page"
