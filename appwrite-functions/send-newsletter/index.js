@@ -98,7 +98,10 @@ module.exports = async function ({ req, res, log, error }) {
         <body>
           <div class="container">
             <div class="header" style="text-align: center;">
-              <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 140px; width: auto; max-width: 100%; display: inline-block; vertical-align: middle; pointer-events: none; user-select: none;">
+              <a href="https://story-nest-steel.vercel.app" style="text-decoration: none; color: white; display: inline-block; cursor: default;" onclick="return false;">
+                <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 120px; width: auto; max-width: 100%; display: inline-block; vertical-align: middle; border: none;">
+                <span style="font-size: 28px; font-weight: bold; vertical-align: middle; margin-left: 15px; font-family: sans-serif;">StoryNest</span>
+              </a>
             </div>
             <div class="content">
               <h2>A new story is waiting for you!</h2>
