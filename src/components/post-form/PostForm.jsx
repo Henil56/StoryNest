@@ -7,12 +7,24 @@ import { useSelector } from 'react-redux'
 
 const CATEGORIES = [
     "Technology",
+    "AI",
+    "Programming",
+    "Business",
+    "Startups",
+    "Education",
+    "Science",
+    "Health",
     "Lifestyle",
     "Travel",
     "Food",
-    "Health",
-    "Education",
     "Entertainment",
+    "Books",
+    "Sports",
+    "Finance",
+    "Personal Stories",
+    "Opinion",
+    "News",
+    "Creative Writing",
     "Other",
 ]
 
