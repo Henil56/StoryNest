@@ -45,6 +45,16 @@ export const apiSlice = createApi({
             },
             providesTags: (result, error, arg) => [{ type: 'Post', id: arg }],
         }),
+        getUserProfile: builder.query({
+            queryFn: async (userId) => {
+                try {
+                    const response = await appwriteService.getUserProfile(userId);
+                    return { data: response }
+                } catch (error) {
+                    return { error }
+                }
+            },
+        }),
     }),
 })
 
@@ -52,4 +62,5 @@ export const {
     useGetPostsQuery,
     useGetPostsByAuthorQuery,
     useGetPostQuery,
+    useGetUserProfileQuery,
 } = apiSlice

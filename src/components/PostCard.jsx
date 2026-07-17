@@ -4,16 +4,18 @@ import Badge from './ui/Badge'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
+import { useGetUserProfileQuery } from '../store/apiSlice'
 
 function stripHtml(input) {
   if (!input) return ''
   return input.replace(/<[^>]*>/g, '')
 }
 
-function PostCard({ $id, title, featuredImage, category, content, views, likes, userId, showDelete = false }) {
+function PostCard({ $id, title, featuredImage, category, content, views, likes, userId, authorName, showDelete = false }) {
   const excerpt = stripHtml(content).substring(0, 120)
   const userData = useSelector((state) => state.auth.userData)
   const isAuthor = userData && userData.$id === userId
+  const { data: authorProfile } = useGetUserProfileQuery(userId, { skip: !userId })
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async (e) => {
@@ -83,7 +85,20 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes, 
           {category && <Badge>{category}</Badge>}
           <h2 className='mt-3 text-lg font-bold text-text-primary line-clamp-2 group-hover:text-primary-600 transition-colors duration-200'>{title}</h2>
           {excerpt && <p className='mt-2 text-sm text-text-muted line-clamp-3 leading-relaxed'>{excerpt}...</p>}
-          <div className='mt-auto pt-4 flex items-center justify-between text-sm'>
+          
+          {/* Author Info */}
+          <div className="flex items-center gap-2 mt-4 mb-2">
+             {authorProfile?.profilePic ? (
+               <img src={appwriteService.getFilePreview(authorProfile.profilePic)} alt="Author" className="w-6 h-6 rounded-full object-cover shadow-sm" />
+             ) : (
+               <div className="w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center text-primary-700 dark:text-primary-300 text-xs font-bold shadow-sm">
+                 {(authorProfile?.username || authorName || 'A').charAt(0).toUpperCase()}
+               </div>
+             )}
+             <span className="font-medium text-text-secondary text-sm line-clamp-1">{authorProfile?.username || authorName || 'Anonymous'}</span>
+          </div>
+
+          <div className='mt-auto pt-3 border-t border-white/10 dark:border-white/5 flex items-center justify-between text-sm'>
             <div className='flex items-center gap-3 text-text-muted'>
               <div className="flex items-center gap-1" title="Views">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import {Container,Logo,LogoutBtn,ThemeToggle} from '../index'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useGetUserProfileQuery } from '../../store/apiSlice'
+import appwriteService from '../../appwrite/config'
 
 function Header() {
   const authStatus=useSelector((state)=>state.auth.status)
@@ -11,6 +12,8 @@ function Header() {
   const { pathname } = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  const { data: userProfile } = useGetUserProfileQuery(userData?.$id, { skip: !userData?.$id })
+  
   const navItems=[
     {
       name: 'Home',
@@ -31,6 +34,9 @@ function Header() {
       name: "Profile",
       slug: `/author/${userData?.$id}`,
       active: authStatus,
+      isProfile: true,
+      profilePic: userProfile?.profilePic,
+      username: userProfile?.username || userData?.name
     },
     {
       name: "Login",
@@ -77,13 +83,24 @@ function Header() {
                   <li key={item.name}>
                     <button
                       onClick={() => navigate(item.slug)}
-                      className={`inline-block px-5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
+                      className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
                         pathname === item.slug
                           ? 'bg-primary-500 text-white dark:bg-primary-900/30 dark:text-primary-300 shadow-sm shadow-primary-500/20'
                           : 'text-white/80 hover:bg-white/10 hover:text-white dark:text-text-secondary dark:hover:bg-surface-dark/50 dark:hover:text-text-primary'
                       }`}
                     >
-                      {item.name}
+                      {item.isProfile && item.profilePic ? (
+                        <img 
+                          src={appwriteService.getFilePreview(item.profilePic)} 
+                          alt="Profile" 
+                          className="w-6 h-6 rounded-full object-cover border border-white/20"
+                        />
+                      ) : item.isProfile ? (
+                        <div className="w-6 h-6 rounded-full bg-primary-600/50 flex items-center justify-center text-white text-xs border border-white/20">
+                          {item.username?.charAt(0)?.toUpperCase() || 'P'}
+                        </div>
+                      ) : null}
+                      {item.isProfile ? item.username?.split(' ')[0] || 'Profile' : item.name}
                     </button>
                   </li>
                 ) : null
@@ -126,13 +143,24 @@ function Header() {
                   <li key={item.name}>
                     <button
                       onClick={() => { navigate(item.slug); setMobileOpen(false); }}
-                      className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                      className={`w-full text-left flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 ${
                         pathname === item.slug
                           ? 'bg-primary-500 text-white dark:bg-primary-900/30 dark:text-primary-300'
                           : 'text-white/80 hover:bg-white/10 hover:text-white dark:text-text-secondary dark:hover:bg-surface-dark/50 dark:hover:text-text-primary'
                       }`}
                     >
-                      {item.name}
+                      {item.isProfile && item.profilePic ? (
+                        <img 
+                          src={appwriteService.getFilePreview(item.profilePic)} 
+                          alt="Profile" 
+                          className="w-7 h-7 rounded-full object-cover border border-white/20"
+                        />
+                      ) : item.isProfile ? (
+                        <div className="w-7 h-7 rounded-full bg-primary-600/50 flex items-center justify-center text-white text-xs border border-white/20">
+                          {item.username?.charAt(0)?.toUpperCase() || 'P'}
+                        </div>
+                      ) : null}
+                      {item.isProfile ? item.username || 'Profile' : item.name}
                     </button>
                   </li>
                 ) : null
