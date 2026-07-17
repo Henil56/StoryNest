@@ -81,7 +81,7 @@ export default function Post() {
     return post ? (
         <div className="animate-fade-in">
             <Helmet>
-                <title>{post.title} | StoryNest</title>
+                <title>StoryNest</title>
                 <meta name="description" content={post.content.replace(/<[^>]*>?/gm, '').substring(0, 160)} />
             </Helmet>
             {/* Confirm Delete Dialog */}
@@ -193,6 +193,9 @@ export default function Post() {
         </div>
     ) : (
         <div className="min-h-[60vh] flex items-center justify-center">
+            <Helmet>
+                <title>StoryNest</title>
+            </Helmet>
             <div className="flex flex-col items-center gap-4 animate-fade-in">
                 <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
                 <p className="text-sm text-text-muted">Loading story...</p>
