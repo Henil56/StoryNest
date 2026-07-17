@@ -36,6 +36,8 @@ export default function Post() {
                     });
                 }
                 else navigate("/");
+            }).catch(() => {
+                navigate("/");
             });
         } else navigate("/");
     }, [slug, navigate]);
@@ -86,7 +88,7 @@ export default function Post() {
         <div className="animate-fade-in">
             <Helmet>
                 <title>StoryNest</title>
-                <meta name="description" content={post.content.replace(/<[^>]*>?/gm, '').substring(0, 160)} />
+                <meta name="description" content={(post.content || '').replace(/<[^>]*>?/gm, '').substring(0, 160)} />
             </Helmet>
             {/* Confirm Delete Dialog */}
             <ConfirmDialog
@@ -190,7 +192,7 @@ export default function Post() {
 
                     <div className="mt-6 h-px bg-border"></div>
                     <div className="mt-8 prose">
-                        {parse(post.content)}
+                        {parse(post.content || '')}
                     </div>
                 </article>
             </Container>
