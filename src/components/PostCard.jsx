@@ -37,8 +37,19 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes, 
   }
 
   return (
-    <Link to={`/post/${$id}`} className="group block h-full relative">
-      <div className={`h-full flex flex-col rounded-2xl border border-[#A8D4EE] bg-surface-elevated shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-[#87CEEB]/30 hover:-translate-y-1 hover:border-[#87CEEB] ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}>
+    <Link to={`/post/${$id}`} className="group block h-full relative perspective-[1000px]">
+      {/* Dynamic Ambient Glow */}
+      <div 
+        className="absolute -inset-0.5 rounded-3xl blur-xl opacity-40 group-hover:opacity-80 group-hover:blur-2xl transition-all duration-500 pointer-events-none"
+        style={{ 
+          backgroundImage: `url(${appwriteService.getFilePreview(featuredImage)})`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover'
+        }}
+      ></div>
+
+      {/* Card Content */}
+      <div className={`relative z-10 h-full flex flex-col rounded-2xl border border-white/10 dark:border-white/5 bg-surface-elevated/95 backdrop-blur-md shadow-sm overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}>
         
         {/* Delete Button for Author */}
         {isAuthor && showDelete && (

@@ -103,39 +103,39 @@ export default function Post() {
             />
 
             {/* Hero Image Section */}
-            <div className="relative w-full h-[50vh] min-h-[400px] max-h-[600px] flex items-center justify-center pt-10 perspective-[2000px]">
-                {/* Blurred Background Container */}
-                <div className="absolute inset-0 overflow-hidden bg-surface">
+            <div className="relative w-full py-16 overflow-hidden bg-surface flex items-center justify-center">
+                {/* Faint ambient background for page atmosphere */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div 
-                        className="absolute inset-0 opacity-50 blur-xl scale-110 transition-all duration-700"
+                        className="absolute inset-0 opacity-20 blur-[100px] scale-150 transition-all duration-700"
                         style={{ 
                             backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage)})`,
                             backgroundPosition: 'center',
                             backgroundSize: 'cover'
                         }}
                     ></div>
-                    {/* Gradient Overlay to blend with the page */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent pointer-events-none"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent"></div>
                 </div>
                 
-                {/* Actual Image (3D Floating Effect) */}
-                <img
-                    src={appwriteService.getFilePreview(post.featuredImage)}
-                    alt={post.title}
-                    className="relative z-10 max-w-[90%] md:max-w-4xl max-h-[85%] rounded-2xl object-cover transition-all duration-700 ease-out cursor-pointer"
-                    style={{
-                        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-                        transform: "perspective(1200px) rotateX(6deg) translateY(-20px) translateZ(40px)"
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "perspective(1200px) rotateX(0deg) translateY(-30px) translateZ(80px) scale(1.02)";
-                        e.currentTarget.style.boxShadow = "0 35px 60px -15px rgba(0, 0, 0, 0.6)";
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "perspective(1200px) rotateX(6deg) translateY(-20px) translateZ(40px)";
-                        e.currentTarget.style.boxShadow = "0 25px 50px -12px rgba(0, 0, 0, 0.5)";
-                    }}
-                />
+                {/* Image with Dynamic Color Glow Border */}
+                <div className="relative z-10 flex max-w-[90%] md:max-w-4xl transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] group">
+                    {/* The Dynamic Glow */}
+                    <div 
+                        className="absolute -inset-1 rounded-2xl blur-xl opacity-70 group-hover:opacity-100 group-hover:blur-2xl group-hover:-inset-2 transition-all duration-500"
+                        style={{ 
+                            backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage)})`,
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover'
+                        }}
+                    ></div>
+                    
+                    {/* The Sharp Image */}
+                    <img
+                        src={appwriteService.getFilePreview(post.featuredImage)}
+                        alt={post.title}
+                        className="relative z-10 w-full max-h-[550px] object-contain rounded-xl border border-white/20 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] bg-black/40 backdrop-blur-md transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:shadow-[0_30px_50px_-15px_rgba(0,0,0,0.6)]"
+                    />
+                </div>
                 
                 {/* Edit Button */}
                 {isAuthor && (
