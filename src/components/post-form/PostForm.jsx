@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form'
 import { Button, Input, Select, RTE } from '../index'
 import appwriteService from '../../appwrite/config'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { apiSlice } from '../../store/apiSlice'
 
 const CATEGORIES = [
     "Technology",
@@ -41,6 +42,7 @@ function PostForm({ post }) {
     })
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const userData = useSelector(state => state.auth.userData)
     const [loading, setLoading] = useState(false)
     const [submitError, setSubmitError] = useState("")
@@ -59,6 +61,7 @@ function PostForm({ post }) {
                     featuredImage: file ? file.$id : undefined,
                 })
                 if (dbPost) {
+                    dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']))
                     navigate(`/post/${dbPost.$id}`)
                 }
             } else {
@@ -72,6 +75,7 @@ function PostForm({ post }) {
                         authorName: userData.name || userData.email || 'Anonymous',
                     })
                     if (dbPost) {
+                        dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']))
                         navigate(`/post/${dbPost.$id}`)
                     }
                 }

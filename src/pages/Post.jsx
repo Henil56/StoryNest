@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { apiSlice } from "../store/apiSlice";
 import appwriteService from "../appwrite/config";
 import { Button, Container } from "../components";
 import parse from "html-react-parser";
-import { useSelector } from "react-redux";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { Helmet } from 'react-helmet-async';
 
@@ -13,6 +14,7 @@ export default function Post() {
     const [deleting, setDeleting] = useState(false);
     const { slug } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [authorProfile, setAuthorProfile] = useState(null);
 
@@ -44,6 +46,7 @@ export default function Post() {
             const status = await appwriteService.deletePost(post.$id);
             if (status) {
                 appwriteService.deleteFile(post.featuredImage);
+                dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
                 navigate("/");
             }
         } catch (err) {
@@ -71,6 +74,7 @@ export default function Post() {
 
         // Backend update
         await appwriteService.toggleLike(post.$id, userData.$id, currentLikes);
+        dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
     };
 
     // Calculate reading time
