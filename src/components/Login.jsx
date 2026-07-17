@@ -118,20 +118,30 @@ function Login() {
                                 })}
                             />
 
-                            <Input
-                                label="Password"
-                                type="password"
-                                placeholder="Enter your password"
-                                required
-                                error={errors.password?.message}
-                                {...register("password", {
-                                    required: "Password is required",
-                                    minLength: {
-                                        value: 6,
-                                        message: "Password must be at least 6 characters"
-                                    }
-                                })}
-                            />
+                            <div className="space-y-1">
+                                <div className="flex justify-between items-center">
+                                    <label className="text-sm font-medium text-text-primary">Password</label>
+                                    <Link 
+                                        to="/forgot-password" 
+                                        className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
+                                    >
+                                        Forgot Password?
+                                    </Link>
+                                </div>
+                                <Input
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    required
+                                    error={errors.password?.message}
+                                    {...register("password", {
+                                        required: "Password is required",
+                                        minLength: {
+                                            value: 6,
+                                            message: "Password must be at least 6 characters"
+                                        }
+                                    })}
+                                />
+                            </div>
 
                             <Button
                                 type="submit"

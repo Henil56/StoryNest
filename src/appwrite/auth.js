@@ -68,6 +68,30 @@ export class AuthService {
         }
     }
 
+    async sendPasswordRecovery(email) {
+        try {
+            return await this.account.createRecovery(
+                email,
+                `${window.location.origin}/reset-password` // URL to redirect user to from email
+            );
+        } catch (error) {
+            this._handleError('sendPasswordRecovery', error);
+        }
+    }
+
+    async resetPassword(userId, secret, password, passwordAgain) {
+        try {
+            return await this.account.updateRecovery(
+                userId,
+                secret,
+                password,
+                passwordAgain
+            );
+        } catch (error) {
+            this._handleError('resetPassword', error);
+        }
+    }
+
     async getCurrentUser(){
         try {
             return await this.account.get();

@@ -24,6 +24,8 @@ const Terms = React.lazy(() => import('./pages/Terms.jsx'))
 const Resources = React.lazy(() => import('./pages/Resources.jsx'))
 const NotFound = React.lazy(() => import('./pages/NotFound.jsx'))
 const OAuthCallback = React.lazy(() => import('./pages/OAuthCallback.jsx'))
+const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword.jsx'))
+const ResetPassword = React.lazy(() => import('./pages/ResetPassword.jsx'))
 
 // Loading fallback
 const PageLoader = () => (
@@ -53,6 +55,22 @@ const router = createBrowserRouter([
             element: (
                 <AuthLayout authentication={false}>
                     <Suspense fallback={<PageLoader />}><Login /></Suspense>
+                </AuthLayout>
+            ),
+        },
+        {
+            path: "/forgot-password",
+            element: (
+                <AuthLayout authentication={false}>
+                    <Suspense fallback={<PageLoader />}><ForgotPassword /></Suspense>
+                </AuthLayout>
+            ),
+        },
+        {
+            path: "/reset-password",
+            element: (
+                <AuthLayout authentication={false}>
+                    <Suspense fallback={<PageLoader />}><ResetPassword /></Suspense>
                 </AuthLayout>
             ),
         },
