@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { apiSlice } from "../store/apiSlice";
@@ -17,6 +17,7 @@ export default function Post() {
     const dispatch = useDispatch();
 
     const [authorProfile, setAuthorProfile] = useState(null);
+    const hasIncrementedView = useRef(false);
 
     const userData = useSelector((state) => state.auth.userData);
 
@@ -26,9 +27,19 @@ export default function Post() {
         if (slug) {
             appwriteService.getPost(slug).then((post) => {
                 if (post) {
-                    setPost(post);
-                    // Increment view count when post is successfully fetched
-                    appwriteService.incrementView(slug, post.views || 0);
+                    // Prevent double counting in StrictMode
+                    if (!hasIncrementedView.current) {
+                        hasIncrementedView.current = true;
+                        
+                        // Increment backend
+                        appwriteService.incrementView(slug, post.views || 0);
+                        
+                        // Update local state instantly and invalidate cache
+                        setPost({ ...post, views: (post.views || 0) + 1 });
+                        dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
+                    } else {
+                        setPost(post);
+                    }
                     
                     // Fetch author profile
                     appwriteService.getUserProfile(post.userId).then((profile) => {
@@ -40,7 +51,7 @@ export default function Post() {
                 navigate("/");
             });
         } else navigate("/");
-    }, [slug, navigate]);
+    }, [slug, navigate, dispatch]);
 
     const deletePost = async () => {
         setDeleting(true);
