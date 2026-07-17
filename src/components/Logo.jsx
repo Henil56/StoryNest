@@ -42,7 +42,7 @@ function Logo({ width, size = 'medium', className = '', alt = 'StoryNest logo', 
     <img
       src={src}
       alt={alt}
-      className={`inline-block object-contain transition-all duration-500 ease-out drop-shadow-sm hover:scale-105 hover:-translate-y-1 hover:-rotate-1 hover:drop-shadow-[0_15px_25px_rgba(70,130,180,0.6)] dark:hover:drop-shadow-[0_15px_25px_rgba(219,39,119,0.6)] active:scale-95 active:translate-y-0 active:rotate-0 cursor-pointer ${className}`}
+      className={`inline-block object-contain transition-all duration-500 ease-out hover:scale-[1.02] hover:-translate-y-0.5 hover:drop-shadow-[0_8px_16px_rgba(0,0,0,0.15)] dark:hover:drop-shadow-[0_0_20px_rgba(251,191,36,0.25)] active:scale-95 active:translate-y-0 cursor-pointer ${className}`}
       style={{ width: normalizedWidth, height: 'auto' }}
     />
   )
