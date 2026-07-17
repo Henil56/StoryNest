@@ -32,14 +32,23 @@ export default function Post() {
                     if (!hasIncrementedView.current) {
                         hasIncrementedView.current = true;
                         
-                        // Increment backend
-                        appwriteService.incrementView(slug, post.views || 0);
+                        const viewedPosts = JSON.parse(localStorage.getItem('viewedPosts') || '[]');
                         
-                        // Update local state instantly and invalidate cache
-                        setPost({ ...post, views: (post.views || 0) + 1 });
-                        dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
-                    } else {
-                        setPost(post);
+                        if (!viewedPosts.includes(slug)) {
+                            // Mark as viewed on this device
+                            viewedPosts.push(slug);
+                            localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
+                            
+                            // Increment backend
+                            appwriteService.incrementView(slug, post.views || 0);
+                            
+                            // Update local state instantly and invalidate cache
+                            setPost({ ...post, views: (post.views || 0) + 1 });
+                            dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
+                        } else {
+                            // Already viewed previously, just display the post
+                            setPost(post);
+                        }
                     }
                     
                     // Fetch author profile
