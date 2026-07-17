@@ -104,8 +104,8 @@ module.exports = async function ({ req, res, log, error }) {
                     <td style="vertical-align: middle;">
                       <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 150px; width: auto; display: block; border: none;">
                     </td>
-                    <td style="vertical-align: middle; padding-left: -3px;">
-                      <span style="font-size: 40px; font-weight: bold; color: rgb(203, 197, 175); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: 0.5px;">StoryNest</span>
+                    <td style="vertical-align: middle; padding-left: 0;">
+                      <span style="font-size: 40px; font-weight: bold; color: rgb(203, 197, 175); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; letter-spacing: 0.5px; margin-left: -35px; display: inline-block;">StoryNest</span>
                     </td>
                   </tr>
                 </table>
