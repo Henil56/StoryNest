@@ -128,7 +128,7 @@ function AllPost() {
                             placeholder="Search stories by title or content..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-border bg-surface-elevated text-text-primary placeholder:text-text-muted outline-none transition-all duration-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 hover:border-border-hover text-sm"
+                            className="w-full pl-12 pr-12 py-3.5 rounded-2xl border border-border bg-surface-elevated shadow-sm text-text-primary placeholder:text-text-muted outline-none transition-all duration-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 hover:border-border-hover text-base"
                         />
                         {searchQuery && (
                             <button

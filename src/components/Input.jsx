@@ -28,10 +28,10 @@ function Input({
             <div className="relative">
                 <input
                     type={type}
-                    className={`w-full px-4 py-3 rounded-xl border ${hasError
-                        ? 'border-rose-400 focus:border-rose-400 focus:ring-2 focus:ring-rose-500/20 bg-rose-50/30 dark:bg-rose-900/10'
-                        : 'border-border focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20'
-                        } bg-surface-elevated text-text-primary placeholder:text-text-muted outline-none transition-all duration-200 hover:border-border-hover ${className}`}
+                    className={`w-full px-5 py-3.5 rounded-2xl border ${hasError
+                        ? 'border-rose-400 focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 bg-rose-50/30 dark:bg-rose-900/10'
+                        : 'border-border focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10'
+                        } bg-surface-elevated text-text-primary placeholder:text-text-muted outline-none transition-all duration-300 shadow-sm hover:border-border-hover ${className}`}
                     ref={ref}
                     {...props}
                     id={id}

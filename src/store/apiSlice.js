@@ -7,6 +7,7 @@ export const apiSlice = createApi({
     tagTypes: ['Post', 'AuthorPosts'],
     endpoints: (builder) => ({
         getPosts: builder.query({
+            keepUnusedDataFor: 300,
             queryFn: async () => {
                 try {
                     const response = await appwriteService.getPosts();
@@ -21,6 +22,7 @@ export const apiSlice = createApi({
             ],
         }),
         getPostsByAuthor: builder.query({
+            keepUnusedDataFor: 300,
             queryFn: async (authorId) => {
                 try {
                     const response = await appwriteService.getPostsByAuthor(authorId);
@@ -35,6 +37,7 @@ export const apiSlice = createApi({
             ],
         }),
         getPost: builder.query({
+            keepUnusedDataFor: 300,
             queryFn: async (slug) => {
                 try {
                     const response = await appwriteService.getPost(slug);

@@ -149,7 +149,7 @@ function Home() {
                                 <div className="mt-10 text-center">
                                     <Link
                                         to="/all-post"
-                                        className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-xl border border-border text-primary-600 hover:bg-primary-50 hover:border-primary-200 dark:hover:bg-primary-900/30 dark:hover:text-primary-300 transition-all duration-200"
+                                        className="inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold rounded-xl border border-primary-200 bg-primary-50 text-primary-700 shadow-md hover:shadow-lg hover:-translate-y-1 hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-900/30 dark:text-primary-300 dark:hover:bg-primary-900/50 transition-all duration-300"
                                     >
                                         View All Stories
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

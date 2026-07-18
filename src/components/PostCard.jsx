@@ -44,7 +44,7 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes, 
       <div 
         className="absolute -inset-0.5 rounded-3xl blur-xl opacity-40 group-hover:opacity-80 group-hover:blur-2xl transition-all duration-500 pointer-events-none"
         style={{ 
-          backgroundImage: `url(${appwriteService.getFilePreview(featuredImage)})`,
+          backgroundImage: `url(${appwriteService.getFilePreview(featuredImage, 200, 0, 100)})`,
           backgroundPosition: 'center',
           backgroundSize: 'cover'
         }}
@@ -76,8 +76,9 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes, 
 
         <div className='overflow-hidden shrink-0 relative'>
           <img
-            src={appwriteService.getFilePreview(featuredImage)}
+            src={appwriteService.getFilePreview(featuredImage, 800, 0, 100)}
             alt={title}
+            loading="lazy"
             className='w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-105'
           />
         </div>

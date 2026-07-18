@@ -7,6 +7,7 @@ import { Button, Container } from "../components";
 import parse from "html-react-parser";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { Helmet } from 'react-helmet-async';
+import DOMPurify from 'dompurify';
 
 export default function Post() {
     const [post, setPost] = useState(null);
@@ -130,7 +131,7 @@ export default function Post() {
                     <div 
                         className="absolute inset-0 opacity-20 blur-[100px] scale-150 transition-all duration-700"
                         style={{ 
-                            backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage)})`,
+                            backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage, 200, 0, 100)})`,
                             backgroundPosition: 'center',
                             backgroundSize: 'cover'
                         }}
@@ -144,7 +145,7 @@ export default function Post() {
                     <div 
                         className="absolute -inset-1 rounded-2xl blur-xl opacity-70 group-hover:opacity-100 group-hover:blur-2xl group-hover:-inset-2 transition-all duration-500"
                         style={{ 
-                            backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage)})`,
+                            backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage, 200, 0, 100)})`,
                             backgroundPosition: 'center',
                             backgroundSize: 'cover'
                         }}
@@ -152,8 +153,9 @@ export default function Post() {
                     
                     {/* The Sharp Image */}
                     <img
-                        src={appwriteService.getFilePreview(post.featuredImage)}
+                        src={appwriteService.getFilePreview(post.featuredImage, 1200, 0, 100)}
                         alt={post.title}
+                        loading="lazy"
                         className="relative z-10 w-full max-h-[550px] object-contain rounded-xl border border-white/20 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] bg-black/40 backdrop-blur-md transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:shadow-[0_30px_50px_-15px_rgba(0,0,0,0.6)]"
                     />
                 </div>
@@ -240,7 +242,7 @@ export default function Post() {
 
                     <div className="mt-6 h-px bg-border"></div>
                     <div className="mt-8 prose">
-                        {parse(post.content || '')}
+                        {parse(DOMPurify.sanitize(post.content || ''))}
                     </div>
                 </article>
             </Container>

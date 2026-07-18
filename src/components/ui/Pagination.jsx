@@ -47,7 +47,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-xl border border-border text-text-secondary hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 dark:hover:bg-primary-900/30 dark:hover:text-primary-300 transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none"
+        className="inline-flex items-center gap-1 px-4 py-2.5 text-sm font-medium rounded-xl border border-border bg-surface text-text-secondary shadow-sm hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 hover:-translate-y-0.5 dark:hover:bg-primary-900/40 dark:hover:text-primary-300 transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
         aria-label="Previous page"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,10 +69,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           <button
             key={page}
             onClick={() => handlePageChange(page)}
-            className={`w-10 h-10 flex items-center justify-center text-sm font-medium rounded-xl transition-all duration-200 ${
+            className={`w-10 h-10 flex items-center justify-center text-sm font-medium rounded-xl transition-all duration-300 ${
               page === currentPage
-                ? 'bg-primary-600 text-white shadow-sm shadow-primary-500/30'
-                : 'border border-border text-text-secondary hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 dark:hover:bg-primary-900/30 dark:hover:text-primary-300'
+                ? 'bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-md shadow-primary-500/40 hover:-translate-y-0.5'
+                : 'border border-border text-text-secondary shadow-sm hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 hover:-translate-y-0.5 dark:hover:bg-primary-900/40 dark:hover:text-primary-300'
             }`}
             aria-label={`Page ${page}`}
             aria-current={page === currentPage ? 'page' : undefined}
@@ -86,7 +86,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-xl border border-border text-text-secondary hover:bg-primary-50 hover:text-primary-600 hover:border-primary-200 dark:hover:bg-primary-900/30 dark:hover:text-primary-300 transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none"
+        className="inline-flex items-center gap-1 px-4 py-2.5 text-sm font-medium rounded-xl border border-border bg-surface text-text-secondary shadow-sm hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 hover:-translate-y-0.5 dark:hover:bg-primary-900/40 dark:hover:text-primary-300 transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none"
         aria-label="Next page"
       >
         <span className="hidden sm:inline">Next</span>

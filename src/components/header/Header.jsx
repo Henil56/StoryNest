@@ -83,10 +83,10 @@ function Header() {
                   <li key={item.name}>
                     <button
                       onClick={() => navigate(item.slug)}
-                      className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
+                      className={`inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl transition-all duration-300 ${
                         pathname === item.slug
-                          ? 'bg-primary-500 text-white dark:bg-primary-900/30 dark:text-primary-300 shadow-sm shadow-primary-500/20'
-                          : 'text-white/80 hover:bg-white/10 hover:text-white dark:text-text-secondary dark:hover:bg-surface-dark/50 dark:hover:text-text-primary'
+                          ? 'bg-primary-500 text-white dark:bg-primary-900/40 dark:text-primary-300 shadow-md shadow-primary-500/30 ring-1 ring-white/20 hover:-translate-y-0.5'
+                          : 'text-white/90 hover:bg-white/15 hover:text-white dark:text-text-secondary dark:hover:bg-surface-dark/70 dark:hover:text-text-primary hover:-translate-y-0.5 active:translate-y-0'
                       }`}
                     >
                       {item.isProfile && item.profilePic ? (
@@ -143,10 +143,10 @@ function Header() {
                   <li key={item.name}>
                     <button
                       onClick={() => { navigate(item.slug); setMobileOpen(false); }}
-                      className={`w-full text-left flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                      className={`w-full text-left flex items-center gap-3 px-5 py-3 rounded-xl text-base font-medium transition-all duration-300 ${
                         pathname === item.slug
-                          ? 'bg-primary-500 text-white dark:bg-primary-900/30 dark:text-primary-300'
-                          : 'text-white/80 hover:bg-white/10 hover:text-white dark:text-text-secondary dark:hover:bg-surface-dark/50 dark:hover:text-text-primary'
+                          ? 'bg-primary-500 text-white dark:bg-primary-900/40 dark:text-primary-300 shadow-md shadow-primary-500/20'
+                          : 'text-white/90 hover:bg-white/15 hover:text-white dark:text-text-secondary dark:hover:bg-surface-dark/60 dark:hover:text-text-primary'
                       }`}
                     >
                       {item.isProfile && item.profilePic ? (

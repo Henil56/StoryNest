@@ -196,14 +196,20 @@ export default function AuthorPosts() {
                         <div className="flex items-center gap-5">
                             {/* Avatar */}
                             {authorProfile?.profilePic ? (
-                                <img 
-                                    src={appwriteService.getFilePreview(authorProfile.profilePic)} 
-                                    alt={displayAuthorName} 
-                                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shadow-lg border-2 border-primary-100 dark:border-primary-900"
-                                />
+                                <div className="relative group">
+                                    <div className="absolute inset-0 bg-primary-500 rounded-full blur group-hover:blur-md transition-all duration-300 opacity-20"></div>
+                                    <img 
+                                        src={appwriteService.getFilePreview(authorProfile.profilePic)} 
+                                        alt={displayAuthorName} 
+                                        className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-full object-cover shadow-xl border-4 border-surface-elevated hover:scale-105 transition-transform duration-300"
+                                    />
+                                </div>
                             ) : (
-                                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary-400 via-primary-500 to-primary-700 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold shadow-lg shadow-primary-500/20">
-                                    {(displayAuthorName || authorId || 'A').charAt(0).toUpperCase()}
+                                <div className="relative group">
+                                    <div className="absolute inset-0 bg-primary-500 rounded-full blur opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
+                                    <div className="relative w-20 h-20 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-3xl sm:text-4xl font-bold shadow-xl border-4 border-surface-elevated hover:scale-105 transition-transform duration-300">
+                                        {(displayAuthorName || authorId || 'A').charAt(0).toUpperCase()}
+                                    </div>
                                 </div>
                             )}
                             <div>
@@ -223,7 +229,7 @@ export default function AuthorPosts() {
                                     setEditUsername(displayAuthorName)
                                     setIsEditing(true)
                                 }}
-                                className="mt-4 sm:mt-0 shadow-sm"
+                                className="mt-4 sm:mt-0 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 px-6 py-2.5 rounded-xl font-semibold"
                             >
                                 <svg className="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                                 Edit Profile

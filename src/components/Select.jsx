@@ -79,7 +79,7 @@ function Select({
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full px-4 py-3 rounded-xl border border-border bg-surface-elevated text-left text-text-primary outline-none transition-all duration-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-500/20 hover:border-border-hover appearance-none pr-10 relative ${className}`}
+                className={`w-full px-5 py-3.5 rounded-2xl border border-border bg-surface-elevated text-left text-text-primary shadow-sm outline-none transition-all duration-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 hover:border-border-hover appearance-none pr-12 relative ${className}`}
             >
                 <span className={`block truncate ${!selected ? 'text-text-muted' : ''}`}>
                     {selected || placeholder || (options && options[0])}
@@ -93,15 +93,15 @@ function Select({
 
             {/* Dropdown Options */}
             {isOpen && (
-                <div className="absolute z-50 mt-2 w-full rounded-xl border border-border bg-surface-elevated shadow-xl overflow-hidden py-2 animate-fade-in max-h-60 overflow-y-auto">
+                <div className="absolute z-50 mt-2 w-full rounded-2xl border border-border bg-surface-elevated shadow-2xl overflow-hidden py-2 animate-slide-up max-h-60 overflow-y-auto">
                     {options?.map((option) => (
                         <button
                             key={option}
                             type="button"
                             onClick={() => handleSelect(option)}
-                            className={`w-full text-left px-4 py-2.5 text-sm transition-colors duration-150 ${
+                            className={`w-full text-left px-5 py-3 text-sm transition-colors duration-200 ${
                                 selected === option 
-                                    ? 'bg-primary-500/10 text-primary-400 font-medium' 
+                                    ? 'bg-primary-50 text-primary-700 font-semibold dark:bg-primary-900/30 dark:text-primary-300' 
                                     : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'
                             }`}
                         >

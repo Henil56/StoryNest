@@ -110,10 +110,7 @@ function PostForm({ post }) {
     }, [watch, slugTransform, setValue])
 
     return (
-        <div className="rounded-2xl bg-surface-elevated p-6 sm:p-8 shadow-sm border border-border animate-fade-in">
-            <h2 className="text-2xl font-bold text-text-primary mb-2">{post ? '✏️ Edit Story' : '📝 Create New Story'}</h2>
-            <p className="text-text-muted text-sm mb-8">Share your thoughts with the world</p>
-
+        <div className="animate-fade-in relative">
             {submitError && (
                 <div className="mb-6 flex items-center gap-2 p-3 rounded-lg bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 text-sm text-danger">
                     <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -122,8 +119,8 @@ function PostForm({ post }) {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit(submit)} className="grid gap-8 lg:grid-cols-2" noValidate>
-                <div className="space-y-5">
+            <form onSubmit={handleSubmit(submit)} className="flex flex-col lg:flex-row gap-8 items-start" noValidate>
+                <div className="flex-1 w-full space-y-6 rounded-3xl bg-surface-elevated p-6 sm:p-8 shadow-xl shadow-primary-500/5 border border-border/50">
                     <Input
                         label="Title"
                         placeholder="Give your story a title"
@@ -146,14 +143,14 @@ function PostForm({ post }) {
                     />
                     <RTE label="Content" name="content" control={control} defaultValue={getValues("content")} />
                 </div>
-                <div className="space-y-5">
+                <div className="w-full lg:w-[340px] xl:w-[380px] shrink-0 space-y-6 rounded-3xl bg-surface-elevated p-6 sm:p-8 shadow-xl shadow-primary-500/5 border border-border/50 lg:sticky lg:top-28">
                     <div>
                         <label className="inline-flex items-center gap-1 mb-1.5 pl-0.5 text-sm font-medium text-text-secondary">
                             Featured Image
                             {!post && <span className="text-rose-500 text-xs leading-none">*</span>}
                         </label>
-                        <div className={`mt-1 rounded-xl border-2 border-dashed transition-colors duration-200 p-6 text-center ${errors.image ? 'border-rose-400 bg-rose-50/30 dark:bg-rose-900/10' : 'border-border hover:border-primary-300'}`}>
-                            <svg className="mx-auto w-10 h-10 text-text-muted mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className={`mt-2 rounded-2xl border-2 border-dashed transition-all duration-300 p-8 text-center group cursor-pointer ${errors.image ? 'border-rose-400 bg-rose-50/50 dark:bg-rose-900/20' : 'border-primary-200 bg-primary-50/30 hover:bg-primary-50/80 hover:border-primary-400 hover:shadow-md dark:border-primary-900/50 dark:bg-primary-900/10 dark:hover:bg-primary-900/30'}`}>
+                            <svg className="mx-auto w-12 h-12 text-primary-400 mb-4 group-hover:scale-110 group-hover:text-primary-500 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             <p className="text-sm text-text-muted mb-2">Click to upload or drag and drop</p>
