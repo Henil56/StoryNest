@@ -30,6 +30,11 @@ export class Service {
 
     async createPost({ title, slug, content, featuredImage, status, userId, category, authorName }) {
         try {
+            // Sanitize document ID to meet Appwrite ID specifications
+            const documentId = slug 
+                ? slug.toLowerCase().replace(/[^a-z0-9._-]/g, '-').replace(/^-+|-+$/g, '').substring(0, 36) || ID.unique()
+                : ID.unique();
+
             const data = {
                 title,
                 slug,
@@ -39,13 +44,14 @@ export class Service {
                 userId,
                 views: 0,
                 likes: [],
+                category: category || 'Other',
             };
-            if (category) data.category = category;
             if (authorName) data.authorName = authorName;
+
             return await this.databases.createDocument(
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
-                slug || ID.unique(),
+                documentId,
                 data
             );
         } catch (error) {
@@ -56,7 +62,9 @@ export class Service {
     async updatePost(slug, { title, content, featuredImage, status, category }) {
         try {
             const data = { title, content, featuredImage, status };
-            if (category !== undefined) data.category = category;
+            if (category !== undefined) {
+                data.category = category || 'Other';
+            }
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
@@ -74,7 +82,7 @@ export class Service {
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
                 slug,
-                { views: currentViews + 1 }
+                { views: (currentViews || 0) + 1 }
             );
         } catch (error) {
             // Non-critical operation, do not throw
@@ -84,16 +92,17 @@ export class Service {
 
     async toggleLike(slug, userId, currentLikes = []) {
         try {
-            const hasLiked = currentLikes.includes(userId);
+            const safeLikes = Array.isArray(currentLikes) ? currentLikes : [];
+            const hasLiked = safeLikes.includes(userId);
             const newLikes = hasLiked
-                ? currentLikes.filter(id => id !== userId)
-                : [...currentLikes, userId];
+                ? safeLikes.filter(id => id !== userId)
+                : [...safeLikes, userId];
 
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
                 slug,
-                { likes: newLikes }
+                { likes: Array.from(new Set(newLikes)) }
             );
         } catch (error) {
             this._handleError('toggleLike', error);
@@ -115,11 +124,17 @@ export class Service {
 
     async getPost(slug) {
         try {
-            return await this.databases.getDocument(
+            const doc = await this.databases.getDocument(
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
                 slug
             );
+            if (doc) {
+                doc.likes = Array.isArray(doc.likes) ? doc.likes : [];
+                doc.views = doc.views || 0;
+                doc.category = doc.category || 'Other';
+            }
+            return doc;
         } catch (error) {
             this._handleError('getPost', error);
         }
@@ -127,11 +142,20 @@ export class Service {
 
     async getPosts(queries = [Query.equal("status", "active"), Query.limit(100), Query.orderDesc("$createdAt")]) {
         try {
-            return await this.databases.listDocuments(
+            const response = await this.databases.listDocuments(
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
                 queries
             );
+            if (response?.documents) {
+                response.documents = response.documents.map(doc => ({
+                    ...doc,
+                    likes: Array.isArray(doc.likes) ? doc.likes : [],
+                    views: doc.views || 0,
+                    category: doc.category || 'Other'
+                }));
+            }
+            return response;
         } catch (error) {
             this._handleError('getPosts', error);
         }
@@ -139,11 +163,20 @@ export class Service {
 
     async getPostsByAuthor(userId) {
         try {
-            return await this.databases.listDocuments(
+            const response = await this.databases.listDocuments(
                 conf.appwriteDatabaseID,
                 conf.appwriteCollectionID,
                 [Query.equal("userId", userId), Query.limit(100), Query.orderDesc("$createdAt")]
             );
+            if (response?.documents) {
+                response.documents = response.documents.map(doc => ({
+                    ...doc,
+                    likes: Array.isArray(doc.likes) ? doc.likes : [],
+                    views: doc.views || 0,
+                    category: doc.category || 'Other'
+                }));
+            }
+            return response;
         } catch (error) {
             this._handleError('getPostsByAuthor', error);
         }
@@ -197,6 +230,10 @@ export class Service {
                 data
             );
         } catch (error) {
+            // If document doesn't exist (404), create it automatically
+            if (error?.code === 404 || error?.status === 404) {
+                return await this.createUserProfile({ userId, username: username || 'Anonymous', profilePic });
+            }
             this._handleError('updateUserProfile', error);
         }
     }
