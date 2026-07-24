@@ -7,6 +7,7 @@ import appwriteService from "../appwrite/config"
 import { useForm } from "react-hook-form"
 import { useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
+import { apiSlice } from '../store/apiSlice'
 
 function Signup() {
     const navigate = useNavigate()
@@ -44,6 +45,7 @@ function Signup() {
                     })
 
                     // 4. Update Redux store and redirect
+                    dispatch(apiSlice.util.invalidateTags(['UserProfile']));
                     dispatch(login({ userData: currentUser }));
                     toast.success('Account created successfully!')
                     navigate("/")

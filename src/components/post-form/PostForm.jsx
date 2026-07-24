@@ -440,9 +440,9 @@ function PostForm({ post }) {
                     <Select
                         options={CATEGORIES}
                         label="Category"
-                        placeholder="Select Category"
+                        placeholder="Select Category (Optional)"
                         className=""
-                        {...register("category", { required: true })}
+                        {...register("category")}
                     />
                     {/* Status Segmented Switch */}
                     <div>

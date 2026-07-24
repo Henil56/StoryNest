@@ -4,7 +4,8 @@ import appwriteService from '../appwrite/config'
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fakeBaseQuery(),
-    tagTypes: ['Post', 'AuthorPosts'],
+    tagTypes: ['Post', 'AuthorPosts', 'UserProfile'],
+    refetchOnMountOrArgChange: true,
     endpoints: (builder) => ({
         getPosts: builder.query({
             keepUnusedDataFor: 300,
@@ -57,6 +58,7 @@ export const apiSlice = createApi({
                     return { error }
                 }
             },
+            providesTags: (result, error, arg) => [{ type: 'UserProfile', id: arg }],
         }),
     }),
 })

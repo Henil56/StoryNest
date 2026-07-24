@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { apiSlice } from "../store/apiSlice";
+import { apiSlice, useGetPostQuery, useGetUserProfileQuery } from "../store/apiSlice";
 import appwriteService from "../appwrite/config";
 import { Button, Container } from "../components";
 import parse from "html-react-parser";
@@ -11,60 +11,51 @@ import { Helmet } from 'react-helmet-async';
 import DOMPurify from 'dompurify';
 
 export default function Post() {
+    const { slug } = useParams();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const userData = useSelector((state) => state.auth.userData);
+
+    const { data: fetchedPost, error: postError } = useGetPostQuery(slug, { skip: !slug });
     const [post, setPost] = useState(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
-    const { slug } = useParams();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    const [authorProfile, setAuthorProfile] = useState(null);
     const hasIncrementedView = useRef(false);
 
-    const userData = useSelector((state) => state.auth.userData);
+    const { data: authorProfile } = useGetUserProfileQuery(post?.userId, { skip: !post?.userId });
 
     const isAuthor = post && userData ? post.userId === userData.$id : false;
 
     useEffect(() => {
-        if (slug) {
-            window.scrollTo(0, 0);
-            appwriteService.getPost(slug).then((post) => {
-                if (post) {
-                    // Prevent double counting in StrictMode
-                    if (!hasIncrementedView.current) {
-                        hasIncrementedView.current = true;
-                        
-                        const viewedPosts = JSON.parse(localStorage.getItem('viewedPosts') || '[]');
-                        
-                        if (!viewedPosts.includes(slug)) {
-                            // Mark as viewed on this device
-                            viewedPosts.push(slug);
-                            localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
-                            
-                            // Increment backend
-                            appwriteService.incrementView(slug, post.views || 0);
-                            
-                            // Update local state instantly and invalidate cache
-                            setPost({ ...post, views: (post.views || 0) + 1 });
-                            dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
-                        } else {
-                            // Already viewed previously, just display the post
-                            setPost(post);
-                        }
-                    }
-                    
-                    // Fetch author profile
-                    appwriteService.getUserProfile(post.userId).then((profile) => {
-                        if (profile) setAuthorProfile(profile);
-                    });
-                }
-                else navigate("/");
-            }).catch(() => {
-                navigate("/");
-            });
-        } else navigate("/");
-    }, [slug, navigate, dispatch]);
+        if (postError) {
+            navigate("/");
+        }
+    }, [postError, navigate]);
+
+    useEffect(() => {
+        if (fetchedPost) {
+            setPost(fetchedPost);
+        }
+    }, [fetchedPost]);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [slug]);
+
+    useEffect(() => {
+        if (fetchedPost && !hasIncrementedView.current) {
+            hasIncrementedView.current = true;
+            const viewedPosts = JSON.parse(localStorage.getItem('viewedPosts') || '[]');
+            if (!viewedPosts.includes(slug)) {
+                viewedPosts.push(slug);
+                localStorage.setItem('viewedPosts', JSON.stringify(viewedPosts));
+                appwriteService.incrementView(slug, fetchedPost.views || 0);
+                setPost(prev => prev ? ({ ...prev, views: (prev.views || 0) + 1 }) : prev);
+                dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
+            }
+        }
+    }, [fetchedPost, slug, dispatch]);
 
     const deletePost = async () => {
         setDeleting(true);

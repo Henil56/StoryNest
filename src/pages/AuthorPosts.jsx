@@ -8,7 +8,7 @@ import LoadingSkeleton from '../components/ui/LoadingSkeleton'
 import Pagination from '../components/ui/Pagination'
 import { useSelector, useDispatch } from 'react-redux'
 import { login } from '../store/authSlice'
-import { useGetPostsByAuthorQuery } from '../store/apiSlice'
+import { useGetPostsByAuthorQuery, apiSlice } from '../store/apiSlice'
 
 const POSTS_PER_PAGE = 12
 
@@ -104,6 +104,7 @@ export default function AuthorPosts() {
                 console.log("Could not update Appwrite account name, but public profile was updated.", err)
             }
 
+            dispatch(apiSlice.util.invalidateTags(['UserProfile', 'Post', 'AuthorPosts']))
             setIsEditing(false)
         } catch (error) {
             setEditError(error.message || "Failed to update profile")

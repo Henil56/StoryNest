@@ -65,12 +65,12 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes =
         if (status) {
           await appwriteService.deleteFile(featuredImage);
           toast.success("Story deleted successfully");
-          // Short timeout to let the user see the toast before reload
-          setTimeout(() => window.location.reload(), 1000);
+          dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
         }
       } catch (error) {
         toast.error("Failed to delete post");
         console.error("Failed to delete post:", error);
+      } finally {
         setIsDeleting(false);
       }
     }

@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { login } from '../store/authSlice';
 import authService from '../appwrite/auth';
 import appwriteService from '../appwrite/config';
+import { apiSlice } from '../store/apiSlice';
 import toast from 'react-hot-toast';
 
 function OAuthCallback() {
@@ -42,6 +43,7 @@ function OAuthCallback() {
                     }
 
                     // 3. Update Redux store
+                    dispatch(apiSlice.util.invalidateTags(['UserProfile']));
                     dispatch(login({ userData: currentUser }));
                     toast.success('Successfully logged in with Google!');
                     
