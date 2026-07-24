@@ -35,7 +35,7 @@ export default function AuthorPosts() {
     
     const loading = loadingPosts || loadingProfile;
 
-    const fetchProfile = async () => {
+    const fetchProfile = React.useCallback(async () => {
         setLoadingProfile(true)
         try {
             const profile = await appwriteService.getUserProfile(authorId)
@@ -45,13 +45,13 @@ export default function AuthorPosts() {
         } finally {
             setLoadingProfile(false)
         }
-    }
+    }, [authorId])
 
     useEffect(() => {
         if (authorId) {
             fetchProfile()
         }
-    }, [authorId])
+    }, [authorId, fetchProfile])
 
     const handleEditSubmit = async (e) => {
         e.preventDefault()

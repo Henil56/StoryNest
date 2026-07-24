@@ -29,7 +29,7 @@ function App() {
       }
     })
     .finally(()=>setLoading(false))
-  },[])
+  },[dispatch])
 
   return !loading ? (
     <div className='min-h-screen w-full bg-surface flex flex-col'>

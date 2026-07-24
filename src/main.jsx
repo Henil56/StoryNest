@@ -7,6 +7,7 @@ import store from './store/store.js'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { AuthLayout } from './components/index.js'
+import PageLoader from './components/ui/PageLoader.jsx'
 
 // Eagerly loaded components for fast initial paint
 import Home from './pages/Home.jsx'
@@ -27,15 +28,7 @@ const OAuthCallback = React.lazy(() => import('./pages/OAuthCallback.jsx'))
 const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword.jsx'))
 const ResetPassword = React.lazy(() => import('./pages/ResetPassword.jsx'))
 
-// Loading fallback
-const PageLoader = () => (
-    <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4 animate-fade-in">
-            <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-            <p className="text-sm text-text-muted">Loading...</p>
-        </div>
-    </div>
-)
+
 
 const router = createBrowserRouter([
   {

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import appwriteService from "../appwrite/config"
 import Badge from './ui/Badge'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import { useGetUserProfileQuery } from '../store/apiSlice'
+import { useNavigate } from 'react-router-dom'
 
 function stripHtml(input) {
   if (!input) return ''
@@ -17,6 +18,22 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes, 
   const isAuthor = userData && userData.$id === userId
   const { data: authorProfile } = useGetUserProfileQuery(userId, { skip: !userId })
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleShare = async (e) => {
+    e.preventDefault();
+    const url = `${window.location.origin}/post/${$id}`;
+    const shareData = { title, text: `Check out this story: ${title}`, url };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success('Link copied to clipboard!');
+      } catch {
+        toast.error('Could not copy link.');
+      }
+    }
+  };
 
   const handleDelete = async (e) => {
     e.preventDefault(); // Prevent navigating to the post page
@@ -114,6 +131,16 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes, 
                 </svg>
                 <span>{(likes || []).length}</span>
               </div>
+              {/* Share icon */}
+              <button
+                onClick={handleShare}
+                title="Share this story"
+                className="flex items-center gap-1 hover:text-primary-600 transition-colors duration-200"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+              </button>
             </div>
             <div className='flex items-center font-semibold text-primary-600 group-hover:gap-1 transition-all duration-200'>
               Read more

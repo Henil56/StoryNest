@@ -46,7 +46,7 @@ function Home() {
     });
 
     const trending = sortedPosts.slice(0, 3)
-    const latest = posts.filter(post => !trending.includes(post))
+
 
     return (
         <div className='w-full'>

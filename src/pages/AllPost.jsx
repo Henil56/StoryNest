@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Container, PostCard, Select } from '../components'
 import { useSelector } from 'react-redux'
 import PageHeader from '../components/ui/PageHeader'
@@ -51,10 +51,20 @@ function AllPost() {
     const [sortBy, setSortBy] = useState('Latest')
     const [currentPage, setCurrentPage] = useState(1)
 
-    // Reset page when filters change
-    useEffect(() => {
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value)
         setCurrentPage(1)
-    }, [searchQuery, selectedCategory, sortBy])
+    }
+
+    const handleCategoryChange = (e) => {
+        setSelectedCategory(e.target.value)
+        setCurrentPage(1)
+    }
+
+    const handleSortChange = (e) => {
+        setSortBy(e.target.value)
+        setCurrentPage(1)
+    }
 
     // Filter posts by search & category
     const filteredPosts = useMemo(() => {
@@ -127,12 +137,12 @@ function AllPost() {
                             type="text"
                             placeholder="Search stories by title or content..."
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={handleSearchChange}
                             className="w-full pl-12 pr-12 py-3.5 rounded-2xl border border-border bg-surface-elevated shadow-sm text-text-primary placeholder:text-text-muted outline-none transition-all duration-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 hover:border-border-hover text-base"
                         />
                         {searchQuery && (
                             <button
-                                onClick={() => setSearchQuery('')}
+                                onClick={() => handleSearchChange({ target: { value: '' } })}
                                 className="absolute inset-y-0 right-0 pr-4 flex items-center text-text-muted hover:text-text-primary transition-colors"
                                 aria-label="Clear search"
                             >
@@ -148,13 +158,13 @@ function AllPost() {
                         <Select
                             options={CATEGORIES}
                             value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            onChange={handleCategoryChange}
                             className="min-w-[150px]"
                         />
                         <Select
                             options={SORT_OPTIONS}
                             value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value)}
+                            onChange={handleSortChange}
                             className="min-w-[150px]"
                         />
                     </div>

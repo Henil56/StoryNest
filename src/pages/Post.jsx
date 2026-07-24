@@ -8,6 +8,7 @@ import parse from "html-react-parser";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { Helmet } from 'react-helmet-async';
 import DOMPurify from 'dompurify';
+import toast from 'react-hot-toast';
 
 export default function Post() {
     const [post, setPost] = useState(null);
@@ -99,6 +100,28 @@ export default function Post() {
         // Backend update
         await appwriteService.toggleLike(post.$id, userData.$id, currentLikes);
         dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
+    };
+
+    const handleShare = async () => {
+        const shareData = {
+            title: post.title,
+            text: `Check out this story: ${post.title}`,
+            url: window.location.href,
+        };
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                // User cancelled – do nothing
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                toast.success('Link copied to clipboard!');
+            } catch {
+                toast.error('Could not copy link.');
+            }
+        }
     };
 
     // Calculate reading time
@@ -237,6 +260,18 @@ export default function Post() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
                             <span className="font-medium">{(post.likes || []).length} likes</span>
+                        </button>
+
+                        {/* Share Button */}
+                        <button
+                            onClick={handleShare}
+                            title="Share this story"
+                            className="flex items-center gap-2 hover:text-primary-600 transition-colors duration-200 ml-auto"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                            </svg>
+                            <span className="font-medium">Share</span>
                         </button>
                     </div>
 

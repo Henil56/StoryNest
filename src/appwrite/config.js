@@ -176,7 +176,7 @@ export class Service {
                 conf.appwriteUsersCollectionID,
                 userId
             );
-        } catch (error) {
+        } catch {
             // It's normal for a user not to have a profile yet (legacy users)
             console.log("No public profile found for user:", userId);
             return null;
