@@ -56,10 +56,34 @@ function PostForm({ post }) {
     const userData = useSelector(state => state.auth.userData)
     const [loading, setLoading] = useState(false)
     const [submitError, setSubmitError] = useState("")
-    const [imagePreview, setImagePreview] = useState(null)
+    const [imagePreview, setImagePreview] = useState(savedDraft?.imagePreview || null)
+    const [draftDismissed, setDraftDismissed] = useState(false)
     const fileInputRef = useRef(null)
     const dropZoneRef = useRef(null)
     const [isDragging, setIsDragging] = useState(false)
+
+    // ── Restore image File from saved base64 on mount ──
+    useEffect(() => {
+        if (!savedDraft?.imagePreview || post) return
+        const restoreFile = async () => {
+            try {
+                const res = await fetch(savedDraft.imagePreview)
+                const blob = await res.blob()
+                const file = new File([blob], 'draft-image.' + (blob.type.split('/')[1] || 'png'), { type: blob.type })
+                const dataTransfer = new DataTransfer()
+                dataTransfer.items.add(file)
+                if (fileInputRef.current) {
+                    fileInputRef.current.files = dataTransfer.files
+                    // Notify react-hook-form
+                    const event = new Event('change', { bubbles: true })
+                    fileInputRef.current.dispatchEvent(event)
+                }
+            } catch { /* failed to restore – user will need to pick again */ }
+        }
+        // Small delay to let the file input mount first
+        const timer = setTimeout(restoreFile, 100)
+        return () => clearTimeout(timer)
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
     // ── Persist draft to sessionStorage on every field change (new posts only) ──
     useEffect(() => {
@@ -72,12 +96,26 @@ function PostForm({ post }) {
                     content: values.content || '',
                     status: values.status || 'active',
                     category: values.category || '',
+                    imagePreview: imagePreview || null,
                 }
                 sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
             } catch { /* storage full – ignore */ }
         })
         return () => subscription.unsubscribe()
-    }, [watch, post])
+    }, [watch, post, imagePreview])
+
+    // Also persist imagePreview separately when it changes (since watch doesn't track it)
+    useEffect(() => {
+        if (post) return
+        try {
+            const raw = sessionStorage.getItem(DRAFT_KEY)
+            if (raw) {
+                const draft = JSON.parse(raw)
+                draft.imagePreview = imagePreview || null
+                sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft))
+            }
+        } catch {}
+    }, [imagePreview, post])
 
     // ── Clear draft helper ──
     const clearDraft = useCallback(() => {
@@ -207,24 +245,18 @@ function PostForm({ post }) {
     }, [setValue])
 
     // ── Draft indicator ──
-    const hasDraft = !post && savedDraft && (savedDraft.title || savedDraft.content)
+    const hasDraft = !post && savedDraft && (savedDraft.title || savedDraft.content) && !draftDismissed
 
     return (
         <div className="animate-fade-in relative">
-            {/* Draft restored banner */}
+            {/* Draft restored — subtle inline pill */}
             {hasDraft && (
-                <div className="mb-6 flex items-center justify-between gap-3 p-3.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0">
-                            <svg className="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-amber-800 dark:text-amber-300">Draft restored</p>
-                            <p className="text-xs text-amber-600 dark:text-amber-400/70">Your unsaved work has been recovered.</p>
-                        </div>
-                    </div>
+                <div className="mb-5 flex items-center gap-2 px-4 py-2.5 rounded-full bg-surface-elevated border border-border/60 shadow-sm w-fit mx-auto animate-slide-up">
+                    <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-sm text-text-secondary">Draft restored</span>
+                    <span className="text-text-muted">·</span>
                     <button
                         type="button"
                         onClick={() => {
@@ -235,10 +267,20 @@ function PostForm({ post }) {
                             setValue('category', '')
                             setValue('status', 'active')
                             setImagePreview(null)
+                            setDraftDismissed(true)
                         }}
-                        className="text-xs font-medium text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200 px-3 py-1.5 rounded-lg border border-amber-300 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-all duration-200 shrink-0"
+                        className="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200"
                     >
                         Discard
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setDraftDismissed(true)}
+                        className="ml-1 text-text-muted hover:text-text-primary transition-colors duration-200"
+                    >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
                 </div>
             )}
@@ -285,44 +327,48 @@ function PostForm({ post }) {
                         {/* Image Preview or Upload Zone */}
                         {imagePreview ? (
                             /* ── Preview State ── */
-                            <div className="mt-2 relative group rounded-2xl overflow-hidden border-2 border-primary-300 dark:border-primary-700 shadow-md">
-                                <img
-                                    src={imagePreview}
-                                    alt="Preview"
-                                    className="w-full aspect-[16/10] object-cover"
-                                />
-                                {/* Hover overlay */}
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100">
-                                    <button
-                                        type="button"
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="px-4 py-2 rounded-xl bg-white/90 text-gray-800 text-sm font-medium backdrop-blur-sm hover:bg-white transition-all duration-200 shadow-lg hover:scale-105"
-                                    >
-                                        <span className="flex items-center gap-1.5">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            Change
-                                        </span>
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={removePreview}
-                                        className="px-4 py-2 rounded-xl bg-rose-500/90 text-white text-sm font-medium backdrop-blur-sm hover:bg-rose-600 transition-all duration-200 shadow-lg hover:scale-105"
-                                    >
-                                        <span className="flex items-center gap-1.5">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                            Remove
-                                        </span>
-                                    </button>
-                                </div>
-                                {/* Filename badge */}
-                                <div className="absolute bottom-2 left-2 right-2">
-                                    <div className="px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-md text-white text-xs font-medium truncate">
-                                        ✓ Image selected
+                            <div className="mt-2 rounded-2xl overflow-hidden border-2 border-primary-300 dark:border-primary-700 shadow-md">
+                                {/* Image container */}
+                                <div className="relative group bg-black/5 dark:bg-black/30">
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        className="w-full max-h-[220px] object-contain"
+                                    />
+                                    {/* Hover overlay with actions */}
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100">
+                                        <button
+                                            type="button"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            className="px-4 py-2 rounded-xl bg-white/90 text-gray-800 text-sm font-medium backdrop-blur-sm hover:bg-white transition-all duration-200 shadow-lg hover:scale-105"
+                                        >
+                                            <span className="flex items-center gap-1.5">
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                Change
+                                            </span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={removePreview}
+                                            className="px-4 py-2 rounded-xl bg-rose-500/90 text-white text-sm font-medium backdrop-blur-sm hover:bg-rose-600 transition-all duration-200 shadow-lg hover:scale-105"
+                                        >
+                                            <span className="flex items-center gap-1.5">
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                                Remove
+                                            </span>
+                                        </button>
                                     </div>
+                                </div>
+                                {/* Status bar below image */}
+                                <div className="px-4 py-2 bg-emerald-500/10 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    Image ready
                                 </div>
                             </div>
                         ) : (
