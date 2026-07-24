@@ -6,14 +6,15 @@ import appwriteService from "../appwrite/config";
 import { Button, Container } from "../components";
 import parse from "html-react-parser";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
+import ShareModal from "../components/ui/ShareModal";
 import { Helmet } from 'react-helmet-async';
 import DOMPurify from 'dompurify';
-import toast from 'react-hot-toast';
 
 export default function Post() {
     const [post, setPost] = useState(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [showShareModal, setShowShareModal] = useState(false);
     const { slug } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -102,27 +103,7 @@ export default function Post() {
         dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
     };
 
-    const handleShare = async () => {
-        const shareData = {
-            title: post.title,
-            text: `Check out this story: ${post.title}`,
-            url: window.location.href,
-        };
-        if (navigator.share) {
-            try {
-                await navigator.share(shareData);
-            } catch (err) {
-                // User cancelled – do nothing
-            }
-        } else {
-            try {
-                await navigator.clipboard.writeText(window.location.href);
-                toast.success('Link copied to clipboard!');
-            } catch {
-                toast.error('Could not copy link.');
-            }
-        }
-    };
+
 
     // Calculate reading time
     const readingTime = post ? Math.max(1, Math.ceil((post.content || '').replace(/<[^>]*>/g, '').split(/\s+/).length / 200)) : 0;
@@ -145,6 +126,12 @@ export default function Post() {
                 confirmText={deleting ? "Deleting..." : "Yes, delete"}
                 loading={deleting}
                 variant="danger"
+            />
+            <ShareModal
+                open={showShareModal}
+                onClose={() => setShowShareModal(false)}
+                url={typeof window !== 'undefined' ? window.location.href : ''}
+                title={post.title}
             />
 
             {/* Hero Image Section */}
@@ -264,14 +251,14 @@ export default function Post() {
 
                         {/* Share Button */}
                         <button
-                            onClick={handleShare}
+                            onClick={() => setShowShareModal(true)}
                             title="Share this story"
-                            className="flex items-center gap-2 hover:text-primary-600 transition-colors duration-200 ml-auto"
+                            className="group/share flex items-center gap-2 ml-auto px-3.5 py-1.5 rounded-full border border-border hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-text-muted hover:text-primary-600 transition-all duration-300"
                         >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4.5 h-4.5 transition-transform duration-300 group-hover/share:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                             </svg>
-                            <span className="font-medium">Share</span>
+                            <span className="text-sm font-semibold">Share</span>
                         </button>
                     </div>
 
