@@ -444,11 +444,39 @@ function PostForm({ post }) {
                         className=""
                         {...register("category", { required: true })}
                     />
-                    <Select
-                        options={["active", "inactive"]}
-                        label="Status"
-                        {...register("status", { required: true })}
-                    />
+                    {/* Status Segmented Switch */}
+                    <div>
+                        <label className="inline-block mb-1.5 pl-0.5 text-sm font-semibold text-text-secondary">
+                            Visibility Status
+                        </label>
+                        <div className="grid grid-cols-2 gap-2 p-1.5 bg-surface rounded-2xl border border-border/60">
+                            <button
+                                type="button"
+                                onClick={() => setValue('status', 'active', { shouldValidate: true })}
+                                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                                    watch('status') === 'active'
+                                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                                        : 'text-text-muted hover:text-text-primary hover:bg-surface-elevated/50'
+                                }`}
+                            >
+                                <span className={`w-2 h-2 rounded-full ${watch('status') === 'active' ? 'bg-white animate-pulse' : 'bg-emerald-500'}`} />
+                                Public (Active)
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setValue('status', 'inactive', { shouldValidate: true })}
+                                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                                    watch('status') === 'inactive'
+                                        ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
+                                        : 'text-text-muted hover:text-text-primary hover:bg-surface-elevated/50'
+                                }`}
+                            >
+                                <span className={`w-2 h-2 rounded-full ${watch('status') === 'inactive' ? 'bg-white animate-pulse' : 'bg-amber-500'}`} />
+                                Private (Draft)
+                            </button>
+                        </div>
+                        <input type="hidden" {...register("status", { required: true })} />
+                    </div>
                     <Button
                         type="submit"
                         bgColor={post ? "bg-emerald-600" : undefined}

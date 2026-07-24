@@ -1,24 +1,55 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import appwriteService from "../appwrite/config"
 import Badge from './ui/Badge'
 import ShareModal from './ui/ShareModal'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
-import { useGetUserProfileQuery } from '../store/apiSlice'
+import { useGetUserProfileQuery, apiSlice } from '../store/apiSlice'
 
 function stripHtml(input) {
   if (!input) return ''
   return input.replace(/<[^>]*>/g, '')
 }
 
-function PostCard({ $id, title, featuredImage, category, content, views, likes, userId, authorName, showDelete = false }) {
+function PostCard({ $id, title, featuredImage, category, content, views, likes = [], userId, authorName, status, showDelete = false }) {
   const excerpt = stripHtml(content).substring(0, 120)
   const userData = useSelector((state) => state.auth.userData)
   const isAuthor = userData && userData.$id === userId
   const { data: authorProfile } = useGetUserProfileQuery(userId, { skip: !userId })
   const [isDeleting, setIsDeleting] = useState(false)
   const [showShareModal, setShowShareModal] = useState(false)
+  const [likesState, setLikesState] = useState(likes || [])
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    setLikesState(likes || [])
+  }, [likes])
+
+  const hasLiked = userData && likesState.includes(userData.$id)
+
+  const handleLike = async (e) => {
+    e.preventDefault()
+    if (!userData) {
+      navigate('/login')
+      return
+    }
+    const currentLikes = likesState || []
+    const updatedLikes = hasLiked
+      ? currentLikes.filter((id) => id !== userData.$id)
+      : [...currentLikes, userData.$id]
+
+    setLikesState(updatedLikes)
+
+    try {
+      await appwriteService.toggleLike($id, userData.$id, currentLikes)
+      dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']))
+    } catch (err) {
+      setLikesState(currentLikes)
+    }
+  }
 
   const handleShareClick = (e) => {
     e.preventDefault();
@@ -90,7 +121,14 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes, 
           />
         </div>
         <div className='p-5 flex flex-col flex-1'>
-          {category && <Badge>{category}</Badge>}
+          <div className="flex items-center gap-2 flex-wrap">
+            {category && <Badge>{category}</Badge>}
+            {status === 'inactive' && (
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/30">
+                🔒 Private Draft
+              </span>
+            )}
+          </div>
           <h2 className='mt-3 text-lg font-bold text-text-primary line-clamp-2 group-hover:text-primary-600 transition-colors duration-200'>{title}</h2>
           {excerpt && <p className='mt-2 text-sm text-text-muted line-clamp-3 leading-relaxed'>{excerpt}...</p>}
           
@@ -115,12 +153,27 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes, 
                 </svg>
                 <span>{views || 0}</span>
               </div>
-              <div className="flex items-center gap-1" title="Likes">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              <button
+                onClick={handleLike}
+                title={hasLiked ? "Unlike story" : "Like story"}
+                className={`flex items-center gap-1 transition-all duration-200 hover:scale-110 ${
+                  hasLiked ? 'text-rose-500 font-medium' : 'hover:text-rose-500'
+                }`}
+              >
+                <svg
+                  className={`w-4 h-4 ${hasLiked ? 'fill-current' : 'fill-none'}`}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
                 </svg>
-                <span>{(likes || []).length}</span>
-              </div>
+                <span>{likesState.length}</span>
+              </button>
               {/* Share icon */}
               <button
                 onClick={handleShareClick}

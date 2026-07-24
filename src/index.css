@@ -269,9 +269,62 @@ img {
   margin: 1.5em 0;
 }
 
-.prose pre code {
-  background: transparent;
-  padding: 0;
+/* ───────── TinyMCE Custom Modern Dropdowns & Fixes ───────── */
+.tox {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+.tox .tox-menu,
+.tox .tox-collection {
+  background-color: var(--color-surface-elevated) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.4) !important;
+  padding: 6px !important;
+}
+
+.tox .tox-collection__item {
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  color: var(--color-text-primary) !important;
+  transition: all 0.15s ease !important;
+}
+
+.tox .tox-collection__item--enabled,
+.tox .tox-collection__item--active,
+.tox .tox-collection__item:hover,
+.tox .tox-collection__item--active:hover {
+  background-color: var(--color-primary-600) !important;
+  color: #ffffff !important;
+}
+
+/* Remove ugly black background boxes behind heading previews in dropdown */
+.tox .tox-collection__item-label *,
+.tox .tox-collection__item-label h1,
+.tox .tox-collection__item-label h2,
+.tox .tox-collection__item-label h3,
+.tox .tox-collection__item-label h4,
+.tox .tox-collection__item-label h5,
+.tox .tox-collection__item-label h6,
+.tox .tox-collection__item-label p,
+.tox .tox-collection__item-label pre,
+.tox .tox-collection__item-label code {
+  background: transparent !important;
+  background-color: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: inherit !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.tox .tox-tbtn {
+  border-radius: 8px !important;
+}
+
+.tox .tox-selectfield select,
+.tox .tox-listboxfield .tox-listbox--select {
+  border-radius: 8px !important;
 }
 
 /* ───────── Shimmer Effect ───────── */

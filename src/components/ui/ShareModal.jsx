@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
 
 export default function ShareModal({ open, onClose, url, title }) {
   const [copied, setCopied] = useState(false)
@@ -93,7 +94,7 @@ export default function ShareModal({ open, onClose, url, title }) {
 
   if (!open) return null
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
       {/* Backdrop */}
       <div
@@ -208,6 +209,7 @@ export default function ShareModal({ open, onClose, url, title }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

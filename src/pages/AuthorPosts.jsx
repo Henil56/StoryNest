@@ -119,8 +119,11 @@ export default function AuthorPosts() {
     else if (posts.length > 0 && posts[0].authorName) displayAuthorName = posts[0].authorName
     else if (isOwnProfile && currentUser?.name) displayAuthorName = currentUser.name
 
-    const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE)
-    const paginatedPosts = posts.slice(
+    // Filter posts: author sees all posts (including drafts), visitors only see active/published posts
+    const visiblePosts = posts.filter(post => isOwnProfile || post.status === 'active')
+
+    const totalPages = Math.ceil(visiblePosts.length / POSTS_PER_PAGE)
+    const paginatedPosts = visiblePosts.slice(
         (currentPage - 1) * POSTS_PER_PAGE,
         currentPage * POSTS_PER_PAGE
     )
@@ -217,7 +220,7 @@ export default function AuthorPosts() {
                                     {displayAuthorName}
                                 </h1>
                                 <p className="mt-1 text-text-muted text-sm">
-                                    {loading ? 'Loading...' : `${posts.length} ${posts.length === 1 ? 'story' : 'stories'} published`}
+                                    {loading ? 'Loading...' : `${visiblePosts.length} ${visiblePosts.length === 1 ? 'story' : 'stories'} ${isOwnProfile ? 'total' : 'published'}`}
                                 </p>
                             </div>
                         </div>
@@ -247,7 +250,7 @@ export default function AuthorPosts() {
                             <LoadingSkeleton key={i} />
                         ))}
                     </div>
-                ) : posts.length === 0 ? (
+                ) : visiblePosts.length === 0 ? (
                     <EmptyState
                         title="No stories yet"
                         description="This author hasn't published any stories yet."
