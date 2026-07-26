@@ -103,7 +103,9 @@ export const postSchema = z.object({
     .min(10, 'Story content must be at least 10 characters long.')
     .max(50000, 'Story content exceeds maximum length (50,000 characters).'),
   category: z
-    .enum(ALLOWED_CATEGORIES, { errorMap: () => ({ message: 'Please select a valid category from the list.' }) }),
+    .string()
+    .optional()
+    .transform((val) => (val && ALLOWED_CATEGORIES.includes(val) ? val : "Other")),
   status: z.enum(['active', 'inactive']),
   image: z.any().optional(),
 });

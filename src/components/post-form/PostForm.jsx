@@ -52,7 +52,7 @@ function PostForm({ post }) {
             slug: post?.slug || savedDraft?.slug || '',
             content: post?.content || savedDraft?.content || '',
             status: post?.status || savedDraft?.status || 'active',
-            category: post?.category || savedDraft?.category || '',
+            category: post?.category || savedDraft?.category || 'Other',
         },
     })
 
