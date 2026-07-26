@@ -1,6 +1,7 @@
 import conf from '../conf/conf.js';
 import { Client, ID, Databases, Storage, Query } from "appwrite";
 import { formatServiceError } from '../utils/errorHandler.js';
+import { validateFileUploadSafety } from '../utils/fileSecurity.js';
 
 export class Service {
     client = new Client();
@@ -311,6 +312,10 @@ export class Service {
         try {
             if (!file) {
                 throw new Error('No file provided to upload.');
+            }
+            const safetyCheck = await validateFileUploadSafety(file);
+            if (!safetyCheck.valid) {
+                throw new Error(safetyCheck.message || 'File upload rejected due to security policy.');
             }
             return await this.bucket.createFile(
                 conf.appwriteBucketID,
