@@ -137,6 +137,14 @@ export default function AuthorPosts() {
     else if (posts.length > 0 && posts[0].authorName) displayAuthorName = posts[0].authorName
     else if (isOwnProfile && currentUser?.name) displayAuthorName = currentUser.name
 
+    const handleOpenEdit = () => {
+        setEditUsername(displayAuthorName)
+        setEditError("")
+        setEditProfilePic(null)
+        setEditPreviewUrl(null)
+        setIsEditing(true)
+    }
+
     const visiblePosts = posts.filter(post => isOwnProfile || post.status === 'active')
 
     // Calculate stats
@@ -275,7 +283,7 @@ export default function AuthorPosts() {
                         <div className="flex flex-col sm:flex-row items-center gap-5">
                             {/* Avatar */}
                             <div 
-                                onClick={() => isOwnProfile && setIsEditing(true)}
+                                onClick={() => isOwnProfile && handleOpenEdit()}
                                 title={isOwnProfile ? "Click to change profile picture" : ""}
                                 className={`relative group ${isOwnProfile ? 'cursor-pointer' : ''}`}
                             >
@@ -321,10 +329,7 @@ export default function AuthorPosts() {
                         {/* Edit Profile Button */}
                         {isOwnProfile && (
                             <Button 
-                                onClick={() => {
-                                    setEditUsername(displayAuthorName)
-                                    setIsEditing(true)
-                                }}
+                                onClick={handleOpenEdit}
                                 variant="secondary"
                                 className="mt-4 sm:mt-0"
                             >
