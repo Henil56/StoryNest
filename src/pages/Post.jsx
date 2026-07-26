@@ -150,28 +150,30 @@ export default function Post() {
                 title={post.title}
             />
 
-            {/* Hero Image Section */}
-            <div className="relative w-full py-12 sm:py-16 overflow-hidden bg-surface flex items-center justify-center">
-                {/* Faint ambient background */}
+            {/* Hero Image Section with Dynamic Photo-Derived Ambient Background */}
+            <div className="relative w-full py-10 sm:py-16 overflow-hidden bg-[#0A0F1D] dark:bg-[#070A14] flex items-center justify-center">
+                {/* Dynamic Ambient Background Derived From Photo */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div 
-                        className="absolute inset-0 opacity-15 blur-[100px] scale-150"
+                        className="absolute inset-0 opacity-60 dark:opacity-50 blur-3xl scale-125 saturate-150 transition-all duration-700"
                         style={{ 
-                            backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage, 200, 0, 100)})`,
+                            backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage, 400, 0, 100)})`,
                             backgroundPosition: 'center',
                             backgroundSize: 'cover'
                         }}
                     ></div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent"></div>
+                    {/* Vignette overlays for smooth blend */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1D] via-transparent to-[#0A0F1D]/80 dark:from-[#070A14] dark:to-[#070A14]/80"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1D]/60 via-transparent to-[#0A0F1D]/60 dark:from-[#070A14]/60 dark:to-[#070A14]/60"></div>
                 </div>
                 
                 {/* Image */}
-                <div className="relative z-10 flex max-w-[90%] md:max-w-4xl transition-all duration-500 hover:-translate-y-1 group">
+                <div className="relative z-10 flex max-w-[92%] md:max-w-4xl transition-all duration-500 hover:-translate-y-1 group px-2">
                     <img
                         src={appwriteService.getFilePreview(post.featuredImage, 1200, 0, 100)}
                         alt={post.title}
                         loading="lazy"
-                        className="relative z-10 w-full max-h-[550px] object-contain rounded-xl border border-border/30 shadow-2xl shadow-black/20 bg-black/40 backdrop-blur-md transition-all duration-500 ease-out group-hover:shadow-[0_30px_50px_-15px_rgba(0,0,0,0.4)]"
+                        className="relative z-10 w-full max-h-[600px] object-contain rounded-2xl border border-white/20 dark:border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] backdrop-blur-xl transition-all duration-500 ease-out group-hover:shadow-[0_35px_70px_-15px_rgba(0,0,0,0.85)] group-hover:border-white/30"
                     />
                 </div>
                 
