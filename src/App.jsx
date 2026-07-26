@@ -64,9 +64,9 @@ function App() {
       <div className="flex flex-col items-center gap-5 animate-fade-in">
         <Logo size="small" />
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-primary-500 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-          <div className="w-2 h-2 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: '150ms' }}></div>
-          <div className="w-2 h-2 rounded-full bg-primary-300 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          <div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2 h-2 rounded-full bg-primary-300 animate-pulse" style={{ animationDelay: '300ms' }}></div>
         </div>
         <p className="text-sm font-medium text-text-muted">Loading StoryNest...</p>
       </div>

@@ -95,11 +95,11 @@ export default function RTE({ name, control, label, defaultValue = "", placehold
                       "undo redo | blocks fontfamily fontsize | bold italic underline forecolor | alignleft aligncenter | bullist numlist | link image | strikethrough blockquote backcolor alignjustify outdent indent media table emoticons charmap searchreplace code preview fullscreen",
                     content_style: isDark
                       ? `
-                        html, body { margin: 0; padding: 16px; font-family: 'Inter', system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.8; color: #F8FAFC; background-color: #110722; box-sizing: border-box; }
+                        html, body { margin: 0; padding: 16px; font-family: system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.8; color: #F8FAFC; background-color: #110722; box-sizing: border-box; }
                         p { margin: 0 0 1.25em 0; }
                         h1, h2, h3, h4 { color: #FFFFFF; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.5em; }
                         a { color: #f472b6; text-decoration: underline; }
-                        blockquote { border-left: 4px solid #db2777; padding-left: 1rem; margin: 1.5rem 0; font-style: italic; color: #cbd5e1; }
+                        blockquote { border-left: 2px solid #db2777; padding-left: 1rem; margin: 1.5rem 0; font-style: italic; color: #cbd5e1; }
                         code { background: #1e1b2e; color: #f472b6; padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.9em; }
                         pre { background: #0a0314; color: #f8fafc; padding: 1rem; border-radius: 12px; overflow-x: auto; }
                         img { max-width: 100%; border-radius: 12px; }
@@ -107,11 +107,11 @@ export default function RTE({ name, control, label, defaultValue = "", placehold
                         .mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before { position: absolute !important; top: 16px !important; left: 20px !important; color: #64748B !important; opacity: 0.5 !important; font-style: normal !important; pointer-events: none !important; }
                       `
                       : `
-                        html, body { margin: 0; padding: 16px; font-family: 'Inter', system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.8; color: #0D1B2A; background-color: #EAF4FB; box-sizing: border-box; }
+                        html, body { margin: 0; padding: 16px; font-family: system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.8; color: #0D1B2A; background-color: #EAF4FB; box-sizing: border-box; }
                         p { margin: 0 0 1.25em 0; }
                         h1, h2, h3, h4 { color: #0D1B2A; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.5em; }
                         a { color: #3B72A0; text-decoration: underline; }
-                        blockquote { border-left: 4px solid #4682B4; padding-left: 1rem; margin: 1.5rem 0; font-style: italic; color: #2E4A62; }
+                        blockquote { border-left: 2px solid #4682B4; padding-left: 1rem; margin: 1.5rem 0; font-style: italic; color: #2E4A62; }
                         code { background: #E0F0FA; color: #2F5C84; padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.9em; }
                         pre { background: #17304D; color: #F0F8FF; padding: 1rem; border-radius: 12px; overflow-x: auto; }
                         img { max-width: 100%; border-radius: 12px; }

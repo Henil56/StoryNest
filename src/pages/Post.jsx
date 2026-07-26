@@ -253,7 +253,7 @@ export default function Post() {
                         
                         <button 
                             onClick={handleLike}
-                            className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-full border text-sm shadow-sm transition-all duration-300 hover:scale-105 active:scale-95 ${
+                            className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-full border text-sm shadow-sm transition-transform transition-colors duration-200 hover:-translate-y-0.5 active:scale-95 ${
                                 userData && (post.likes || []).includes(userData.$id) 
                                     ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-900/20 dark:border-rose-800/50 dark:text-rose-400' 
                                     : 'bg-surface border-border/50 text-text-secondary hover:border-rose-300 hover:text-rose-500'
@@ -269,9 +269,9 @@ export default function Post() {
                         <button
                             onClick={() => setShowShareModal(true)}
                             title="Share this story"
-                            className="group/share inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-border/50 bg-surface text-text-muted hover:border-primary-400 hover:text-primary-600 shadow-sm transition-all duration-300 hover:scale-105 active:scale-95 ml-auto"
+                            className="group/share inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-border/50 bg-surface text-text-muted hover:border-primary-400 hover:text-primary-600 shadow-sm transition-transform transition-colors duration-200 hover:-translate-y-0.5 active:scale-95 ml-auto"
                         >
-                            <svg className="w-4 h-4 transition-transform duration-300 group-hover/share:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 transition-transform duration-200 group-hover/share:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                             </svg>
                             <span className="text-sm font-semibold">Share</span>

@@ -77,7 +77,7 @@ function Home() {
                         {/* Headline — Full Width */}
                         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#0F2942] dark:text-white leading-[1.15] tracking-tight max-w-4xl">
                             There's a story inside you <br className="hidden sm:block" />
-                            <span className="bg-gradient-to-r from-[#0F2942] via-[#2B5D8C] to-[#407B9E] dark:from-amber-200 dark:via-rose-200 dark:to-sky-200 bg-clip-text text-transparent">
+                            <span className="text-primary-600 dark:text-primary-300">
                                 that someone, somewhere, is waiting to read.
                             </span>
                         </h1>
@@ -122,7 +122,7 @@ function Home() {
 
                                 <div className="flex flex-col gap-2.5">
                                     <Link to={isLoggedIn ? "/add-post" : "/login"} className="w-full">
-                                        <button className="group w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold rounded-xl bg-primary-600 hover:bg-primary-500 text-white shadow-md shadow-primary-600/25 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-300">
+                                        <button className="group w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold rounded-xl bg-primary-600 hover:bg-primary-500 text-white shadow-md shadow-primary-600/25 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-transform transition-colors duration-300">
                                             <svg className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                             </svg>
@@ -130,7 +130,7 @@ function Home() {
                                         </button>
                                     </Link>
                                     <Link to="/all-post" className="w-full">
-                                        <button className="group w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold rounded-xl text-text-primary dark:text-white bg-surface dark:bg-white/10 hover:bg-border/40 dark:hover:bg-white/20 border border-border dark:border-white/20 shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] backdrop-blur-md transition-all duration-300">
+                                        <button className="group w-full inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-semibold rounded-xl text-text-primary dark:text-white bg-surface dark:bg-white/10 hover:bg-border/40 dark:hover:bg-white/20 border border-border dark:border-white/20 shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] backdrop-blur-md transition-transform transition-colors duration-300">
                                             Explore Stories
                                             <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
