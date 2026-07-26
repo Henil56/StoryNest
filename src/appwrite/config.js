@@ -1,6 +1,6 @@
 import conf from '../conf/conf.js';
 import { Client, ID, Databases, Storage, Query } from "appwrite";
-
+import { formatServiceError } from '../utils/errorHandler.js';
 
 export class Service {
     client = new Client();
@@ -21,11 +21,7 @@ export class Service {
     }
 
     _handleError(operation, error) {
-        console.error(`[Appwrite Service] ${operation} failed:`, error);
-        const err = new Error(`${operation} failed: ${error?.message || error}`);
-        err.code = error?.code || error?.status || 'APPWRITE_ERROR';
-        err.cause = error;
-        throw err;
+        throw formatServiceError(operation, error);
     }
 
     async createPost({ title, slug, content, featuredImage, status, userId, category, authorName }) {
