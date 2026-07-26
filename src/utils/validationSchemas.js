@@ -82,7 +82,7 @@ export const ALLOWED_CATEGORIES = [
   "Culture & Arts",
   "Personal Stories",
   "Other"
-] as const;
+];
 
 // 8. Story Post Schema
 export const postSchema = z.object({
