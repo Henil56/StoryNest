@@ -23,6 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
+# Environment variables & secrets
+.env
+.env.*
+!.env.sample
+
 # Local skills & design context
 .agents/
 .21st/
