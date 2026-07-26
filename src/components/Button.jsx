@@ -28,25 +28,25 @@ export default function Button({
     loadingText,
     ...props
 }) {
-    const base = 'inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed hover:-translate-y-0.5 active:translate-y-0';
+    const base = 'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]';
 
     const variants = {
-        primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-sm hover:shadow-md',
-        secondary: 'bg-surface-elevated dark:bg-surface-elevated text-primary-600 border border-border hover:border-border-hover hover:bg-primary-50 dark:hover:bg-primary-900/30 focus:ring-primary-200',
-        danger: 'bg-danger text-white hover:bg-rose-700 focus:ring-rose-500 shadow-sm hover:shadow-md',
-        success: 'bg-success text-white hover:bg-emerald-700 focus:ring-emerald-500 shadow-sm hover:shadow-md',
-        outline: 'bg-transparent text-primary-600 border border-primary-600 hover:bg-primary-50 focus:ring-primary-500',
+        primary: 'bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 focus:ring-primary-500 shadow-md shadow-primary-600/20 hover:shadow-lg hover:shadow-primary-600/30',
+        secondary: 'bg-surface-elevated dark:bg-surface-elevated text-primary-600 border border-border hover:border-border-hover hover:bg-primary-50 dark:hover:bg-primary-900/30 focus:ring-primary-200 shadow-sm hover:shadow-md',
+        danger: 'bg-gradient-to-r from-rose-600 to-rose-700 text-white hover:from-rose-700 hover:to-rose-800 focus:ring-rose-500 shadow-md shadow-rose-600/20 hover:shadow-lg',
+        success: 'bg-gradient-to-r from-emerald-600 to-emerald-700 text-white hover:from-emerald-700 hover:to-emerald-800 focus:ring-emerald-500 shadow-md shadow-emerald-600/20 hover:shadow-lg',
+        outline: 'bg-transparent text-primary-600 border border-primary-400 hover:bg-primary-50 focus:ring-primary-500 hover:border-primary-500',
         ghost: 'bg-transparent text-primary-600 hover:bg-primary-50 focus:ring-primary-200',
     };
 
     const sizes = {
-        sm: 'px-3 py-1.5 text-sm',
+        sm: 'px-3.5 py-1.5 text-sm',
         md: 'px-5 py-2.5 text-sm',
         lg: 'px-6 py-3 text-base',
     };
 
     const variantClasses = bgColor
-        ? `${bgColor} text-white hover:opacity-90 shadow-sm hover:shadow-md`
+        ? `${bgColor} text-white hover:opacity-90 shadow-md hover:shadow-lg`
         : (variants[variant] || variants.primary);
     const sizeClasses = sizes[size] || sizes.md;
     const isDisabled = disabled || loading;

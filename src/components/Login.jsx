@@ -3,9 +3,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { login as authLogin } from '../store/authSlice'
 import { Button, Input, Logo } from './index'
 import authService from "../appwrite/auth"
+import appwriteService from "../appwrite/config"
 import { useForm } from "react-hook-form"
 import { useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
+import { apiSlice } from '../store/apiSlice'
 
 function Login() {
     const navigate = useNavigate()
@@ -20,6 +22,15 @@ function Login() {
             if (session) {
                 const userData = await authService.getCurrentUser()
                 if (userData) {
+                    try {
+                        await appwriteService.updateUserProfile(userData.$id, {
+                            email: userData.email || data.email,
+                            username: userData.name
+                        });
+                        dispatch(apiSlice.util.invalidateTags(['UserProfile']));
+                    } catch (err) {
+                        console.error("Failed to sync profile email:", err);
+                    }
                     dispatch(authLogin({ userData }));
                 }
                 toast.success('Successfully logged in!')
@@ -37,17 +48,24 @@ function Login() {
     }
 
     return (
-        <div className='min-h-[80vh] flex items-center justify-center w-full px-4'>
+        <div className='min-h-[80vh] flex items-center justify-center w-full px-4 page-enter'>
             <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 rounded-2xl shadow-xl overflow-hidden bg-surface-elevated animate-fade-in">
                 {/* Left decorative panel */}
-                <div className="hidden lg:flex flex-col justify-center p-12 bg-gradient-to-br from-[#87CEEB] via-[#4682B4] to-[#17304D] text-white">
-                    <div className="text-5xl mb-6">📖</div>
-                    <h2 className="text-3xl font-bold leading-tight">Welcome back to<br/>StoryNest</h2>
-                    <p className="mt-4 text-primary-200 text-lg leading-relaxed">Continue your writing journey. Your stories are waiting for you.</p>
-                    <div className="mt-8 flex gap-3">
-                        <div className="w-12 h-1 rounded-full bg-white/40"></div>
-                        <div className="w-12 h-1 rounded-full bg-white/20"></div>
-                        <div className="w-12 h-1 rounded-full bg-white/20"></div>
+                <div className="hidden lg:flex flex-col justify-center p-12 bg-gradient-to-br from-[#87CEEB] via-[#4682B4] to-[#17304D] text-white relative overflow-hidden">
+                    {/* Floating decorations */}
+                    <div className="absolute top-16 right-12 w-28 h-28 rounded-full bg-white/10 blur-xl animate-float"></div>
+                    <div className="absolute bottom-24 left-8 w-20 h-20 rounded-full bg-white/5 blur-lg" style={{ animation: 'float 5s ease-in-out infinite 1.5s' }}></div>
+                    <div className="absolute top-1/2 right-1/4 w-16 h-16 rounded-full bg-white/8 blur-md" style={{ animation: 'float 7s ease-in-out infinite 0.5s' }}></div>
+                    
+                    <div className="relative z-10">
+                        <div className="text-5xl mb-6">📖</div>
+                        <h2 className="text-3xl font-bold leading-tight">Welcome back to<br/>StoryNest</h2>
+                        <p className="mt-4 text-[#B0E0E6] text-lg leading-relaxed">Continue your writing journey. Your stories are waiting for you.</p>
+                        <div className="mt-8 flex gap-3">
+                            <div className="w-12 h-1 rounded-full bg-white/40"></div>
+                            <div className="w-12 h-1 rounded-full bg-white/20"></div>
+                            <div className="w-12 h-1 rounded-full bg-white/20"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -67,7 +85,7 @@ function Login() {
 
                     <button
                         onClick={() => authService.loginWithGoogle()}
-                        className="w-full mt-6 flex items-center justify-center gap-3 px-4 py-3 border border-border rounded-xl bg-surface hover:bg-surface-elevated hover:shadow-sm transition-all duration-200 text-text-primary font-medium"
+                        className="w-full mt-6 flex items-center justify-center gap-3 px-4 py-3 border border-border rounded-xl bg-surface hover:bg-surface-elevated hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-text-primary font-medium"
                     >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path
@@ -96,7 +114,7 @@ function Login() {
                             <div className="w-full border-t border-border"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-surface-elevated text-text-muted">Or continue with email</span>
+                            <span className="px-3 bg-surface-elevated text-text-muted text-xs uppercase tracking-wider font-medium">Or continue with email</span>
                         </div>
                     </div>
 
@@ -119,8 +137,8 @@ function Login() {
                             />
 
                             <div className="space-y-1">
-                                <label className="text-sm font-medium text-text-primary">Password</label>
                                 <Input
+                                    label="Password"
                                     type="password"
                                     placeholder="Enter your password"
                                     required

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../store/authSlice';
@@ -10,46 +10,53 @@ import toast from 'react-hot-toast';
 function OAuthCallback() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const hasProcessed = useRef(false);
 
     useEffect(() => {
+        if (hasProcessed.current) return;
+        hasProcessed.current = true;
+
         const handleOAuthCallback = async () => {
             try {
                 // 1. Get current logged in user from Appwrite session
                 const currentUser = await authService.getCurrentUser();
                 
-                if (currentUser) {
-                    // 2. Check if a public profile already exists
-                    try {
-                        const existingProfile = await appwriteService.getUserProfile(currentUser.$id);
-                        if (!existingProfile) {
-                            // If profile doesn't exist, create one (using their Google name)
-                            await appwriteService.createUserProfile({
-                                userId: currentUser.$id,
-                                username: currentUser.name || 'Anonymous User',
-                                profilePic: null
-                            });
+                    if (currentUser) {
+                        // 2. Check if a public profile already exists in database
+                        let existingProfile = null;
+                        try {
+                            existingProfile = await appwriteService.getUserProfile(currentUser.$id);
+                        } catch (error) {
+                            console.log("No profile found for OAuth user:", error);
                         }
-                    } catch (error) {
-                        // DocumentNotFound error means profile doesn't exist, so we create it
-                        if (error?.code === 404) {
-                            await appwriteService.createUserProfile({
-                                userId: currentUser.$id,
-                                username: currentUser.name || 'Anonymous User',
-                                profilePic: null
-                            });
-                        } else {
-                            throw error;
-                        }
-                    }
 
-                    // 3. Update Redux store
-                    dispatch(apiSlice.util.invalidateTags(['UserProfile']));
-                    dispatch(login({ userData: currentUser }));
-                    toast.success('Successfully logged in with Google!');
-                    
-                    // 4. Redirect to home
-                    navigate('/');
-                } else {
+                        // Profile is complete if it exists and is not a placeholder
+                        const isProfileComplete = Boolean(
+                            existingProfile && 
+                            existingProfile.username && 
+                            existingProfile.username !== 'Anonymous User' && 
+                            existingProfile.username !== 'Anonymous'
+                        );
+
+                        if (isProfileComplete) {
+                            // Existing user with complete profile -> log in directly silently
+                            dispatch(apiSlice.util.invalidateTags(['UserProfile']));
+                            dispatch(login({ userData: currentUser }));
+                            navigate('/');
+                        } else {
+                            // First-time Google user (from either Login or Signup page) -> redirect to complete username & profile picture
+                            const googleAvatar = currentUser?.prefs?.avatar || currentUser?.prefs?.picture || currentUser?.picture || null;
+                            dispatch(login({ userData: currentUser }));
+                            navigate('/signup?googleNew=true', {
+                                state: {
+                                    isGoogleNew: true,
+                                    name: currentUser.name || '',
+                                    email: currentUser.email || '',
+                                    googleAvatar: googleAvatar
+                                }
+                            });
+                        }
+                    } else {
                     toast.error('Failed to retrieve user data from Google.');
                     navigate('/login');
                 }

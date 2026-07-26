@@ -107,7 +107,7 @@ function AllPost() {
 
     if (!isLoggedIn) {
         return (
-            <div className="w-full py-16">
+            <div className="w-full py-16 page-enter">
                 <Container>
                     <EmptyState
                         title="Sign in to explore"
@@ -120,63 +120,70 @@ function AllPost() {
     }
 
     return (
-        <div className='w-full py-12'>
+        <div className='w-full py-12 page-enter'>
             <Container>
                 <PageHeader title="All Stories" subtitle="Browse every story published on StoryNest." />
 
-                {/* Search & Filter Bar */}
-                <div className="mb-8 flex flex-col sm:flex-row gap-3 animate-fade-in">
-                    {/* Search Input */}
-                    <div className="relative flex-1">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <svg className="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Search stories by title or content..."
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            className="w-full pl-12 pr-12 py-3.5 rounded-2xl border border-border bg-surface-elevated shadow-sm text-text-primary placeholder:text-text-muted outline-none transition-all duration-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 hover:border-border-hover text-base"
-                        />
-                        {searchQuery && (
-                            <button
-                                onClick={() => handleSearchChange({ target: { value: '' } })}
-                                className="absolute inset-y-0 right-0 pr-4 flex items-center text-text-muted hover:text-text-primary transition-colors"
-                                aria-label="Clear search"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                {/* Search & Filter Bar — Unified */}
+                <div className="relative z-30 mb-8 p-4 rounded-2xl bg-surface-elevated/80 backdrop-blur-sm border border-border/30 shadow-sm animate-fade-in">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        {/* Search Input */}
+                        <div className="relative flex-1">
+                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <svg className="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
-                            </button>
-                        )}
-                    </div>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search stories..."
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-border bg-surface text-text-primary placeholder:text-text-muted outline-none transition-all duration-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 hover:border-border-hover text-sm"
+                            />
+                            {searchQuery && (
+                                <button
+                                    onClick={() => handleSearchChange({ target: { value: '' } })}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-text-muted hover:text-text-primary transition-colors"
+                                    aria-label="Clear search"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            )}
+                        </div>
 
-                    {/* Category and Sort Filters */}
-                    <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                        <Select
-                            options={CATEGORIES}
-                            value={selectedCategory}
-                            onChange={handleCategoryChange}
-                            className="min-w-[150px]"
-                        />
-                        <Select
-                            options={SORT_OPTIONS}
-                            value={sortBy}
-                            onChange={handleSortChange}
-                            className="min-w-[150px]"
-                        />
+                        {/* Category and Sort Filters */}
+                        <div className="flex gap-3 w-full sm:w-auto">
+                            <Select
+                                options={CATEGORIES}
+                                value={selectedCategory}
+                                onChange={handleCategoryChange}
+                                className="min-w-[140px] !py-2.5 !text-sm"
+                            />
+                            <Select
+                                options={SORT_OPTIONS}
+                                value={sortBy}
+                                onChange={handleSortChange}
+                                className="min-w-[140px] !py-2.5 !text-sm"
+                            />
+                        </div>
                     </div>
                 </div>
 
                 {/* Results count */}
                 {!loading && (searchQuery || selectedCategory !== 'All') && (
-                    <p className="mb-6 text-sm text-text-muted">
-                        {filteredPosts.length} {filteredPosts.length === 1 ? 'story' : 'stories'} found
-                        {searchQuery && <> for "<span className="font-medium text-text-secondary">{searchQuery}</span>"</>}
-                        {selectedCategory !== 'All' && <> in <span className="font-medium text-text-secondary">{selectedCategory}</span></>}
-                    </p>
+                    <div className="mb-6 flex items-center gap-2 text-sm text-text-muted animate-fade-in">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <span>
+                            <span className="font-semibold text-text-secondary">{filteredPosts.length}</span> {filteredPosts.length === 1 ? 'story' : 'stories'} found
+                            {searchQuery && <> for "<span className="font-medium text-text-secondary">{searchQuery}</span>"</>}
+                            {selectedCategory !== 'All' && <> in <span className="font-medium text-text-secondary">{selectedCategory}</span></>}
+                        </span>
+                    </div>
                 )}
 
                 {/* Content */}

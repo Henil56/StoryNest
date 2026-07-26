@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { apiSlice, useGetPostQuery, useGetUserProfileQuery } from "../store/apiSlice";
+import { getAvatarUrl } from "../utils/avatar";
 import appwriteService from "../appwrite/config";
 import { Button, Container } from "../components";
 import parse from "html-react-parser";
@@ -9,6 +10,7 @@ import ConfirmDialog from "../components/ui/ConfirmDialog";
 import ShareModal from "../components/ui/ShareModal";
 import { Helmet } from 'react-helmet-async';
 import DOMPurify from 'dompurify';
+import { formatTimeAgo } from '../utils/timeAgo';
 
 export default function Post() {
     const { slug } = useParams();
@@ -21,7 +23,10 @@ export default function Post() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [showShareModal, setShowShareModal] = useState(false);
+    const [readProgress, setReadProgress] = useState(0);
+    const [authorImgError, setAuthorImgError] = useState(false);
     const hasIncrementedView = useRef(false);
+    const articleRef = useRef(null);
 
     const { data: authorProfile } = useGetUserProfileQuery(post?.userId, { skip: !post?.userId });
 
@@ -42,6 +47,22 @@ export default function Post() {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [slug]);
+
+    // Reading progress bar
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!articleRef.current) return;
+            const element = articleRef.current;
+            const rect = element.getBoundingClientRect();
+            const totalHeight = element.scrollHeight - window.innerHeight;
+            const scrollTop = window.scrollY - element.offsetTop;
+            const progress = Math.min(Math.max(scrollTop / totalHeight, 0), 1);
+            setReadProgress(progress);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [post]);
 
     useEffect(() => {
         if (fetchedPost && !hasIncrementedView.current) {
@@ -94,15 +115,19 @@ export default function Post() {
         dispatch(apiSlice.util.invalidateTags(['Post', 'AuthorPosts']));
     };
 
-
-
     // Calculate reading time
     const readingTime = post ? Math.max(1, Math.ceil((post.content || '').replace(/<[^>]*>/g, '').split(/\s+/).length / 200)) : 0;
 
     const displayAuthorName = authorProfile?.username || post?.authorName || 'Author';
 
     return post ? (
-        <div className="animate-fade-in">
+        <div className="page-enter" ref={articleRef}>
+            {/* Reading Progress Bar */}
+            <div 
+                className="reading-progress-bar"
+                style={{ transform: `scaleX(${readProgress})` }}
+            />
+
             <Helmet>
                 <title>{post.title} | StoryNest</title>
                 <meta name="description" content={(post.content || '').replace(/<[^>]*>?/gm, '').substring(0, 160)} />
@@ -126,11 +151,11 @@ export default function Post() {
             />
 
             {/* Hero Image Section */}
-            <div className="relative w-full py-16 overflow-hidden bg-surface flex items-center justify-center">
-                {/* Faint ambient background for page atmosphere */}
+            <div className="relative w-full py-12 sm:py-16 overflow-hidden bg-surface flex items-center justify-center">
+                {/* Faint ambient background */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div 
-                        className="absolute inset-0 opacity-20 blur-[100px] scale-150 transition-all duration-700"
+                        className="absolute inset-0 opacity-15 blur-[100px] scale-150"
                         style={{ 
                             backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage, 200, 0, 100)})`,
                             backgroundPosition: 'center',
@@ -140,24 +165,13 @@ export default function Post() {
                     <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent"></div>
                 </div>
                 
-                {/* Image with Dynamic Color Glow Border */}
-                <div className="relative z-10 flex max-w-[90%] md:max-w-4xl transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] group">
-                    {/* The Dynamic Glow */}
-                    <div 
-                        className="absolute -inset-1 rounded-2xl blur-xl opacity-70 group-hover:opacity-100 group-hover:blur-2xl group-hover:-inset-2 transition-all duration-500"
-                        style={{ 
-                            backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage, 200, 0, 100)})`,
-                            backgroundPosition: 'center',
-                            backgroundSize: 'cover'
-                        }}
-                    ></div>
-                    
-                    {/* The Sharp Image */}
+                {/* Image */}
+                <div className="relative z-10 flex max-w-[90%] md:max-w-4xl transition-all duration-500 hover:-translate-y-1 group">
                     <img
                         src={appwriteService.getFilePreview(post.featuredImage, 1200, 0, 100)}
                         alt={post.title}
                         loading="lazy"
-                        className="relative z-10 w-full max-h-[550px] object-contain rounded-xl border border-white/20 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] bg-black/40 backdrop-blur-md transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:shadow-[0_30px_50px_-15px_rgba(0,0,0,0.6)]"
+                        className="relative z-10 w-full max-h-[550px] object-contain rounded-xl border border-border/30 shadow-2xl shadow-black/20 bg-black/40 backdrop-blur-md transition-all duration-500 ease-out group-hover:shadow-[0_30px_50px_-15px_rgba(0,0,0,0.4)]"
                     />
                 </div>
                 
@@ -178,10 +192,11 @@ export default function Post() {
 
             {/* Article Content */}
             <Container>
-                <article className="max-w-3xl mx-auto py-10 sm:py-16">
+                <article className="max-w-3xl mx-auto py-8 sm:py-12">
                     {/* Category Badge */}
                     {post.category && (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 mb-4">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 border border-primary-200/50 dark:border-primary-700/30 mb-4">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
                             {post.category}
                         </span>
                     )}
@@ -196,18 +211,15 @@ export default function Post() {
                             to={`/author/${post.userId}`}
                             className="flex items-center gap-2 hover:text-primary-600 transition-colors duration-200"
                         >
-                            {authorProfile?.profilePic ? (
-                                <img 
-                                    src={appwriteService.getFilePreview(authorProfile.profilePic)} 
-                                    alt={displayAuthorName} 
-                                    className="w-8 h-8 rounded-full object-cover"
-                                />
-                            ) : (
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-xs font-bold">
-                                    {(displayAuthorName || 'A').charAt(0).toUpperCase()}
-                                </div>
-                            )}
-                            <span className="font-medium">{displayAuthorName}</span>
+                            <img 
+                                src={getAvatarUrl(authorProfile?.profilePic, authorProfile?.email, displayAuthorName)} 
+                                alt={displayAuthorName} 
+                                referrerPolicy="no-referrer"
+                                className="w-8 h-8 rounded-full object-cover ring-2 ring-border/30"
+                            />
+                            <span className="font-semibold text-text-primary hover:text-primary-600 transition-colors duration-200">
+                                {displayAuthorName}
+                            </span>
                         </Link>
 
                         <span className="text-text-muted">·</span>
@@ -218,12 +230,21 @@ export default function Post() {
                             </svg>
                             {readingTime} min read
                         </span>
+
+                        {post?.$createdAt && (
+                            <>
+                                <span className="text-text-muted">·</span>
+                                <span className="text-[#0284C7] dark:text-[#38BDF8] font-medium text-xs sm:text-sm">
+                                    {formatTimeAgo(post.$createdAt)}
+                                </span>
+                            </>
+                        )}
                     </div>
 
-                    {/* Engagement Bar */}
-                    <div className="mt-6 flex items-center gap-6 text-text-secondary">
-                        <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {/* Engagement Bar — Pill Treatment */}
+                    <div className="mt-6 flex flex-wrap items-center gap-3">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-surface border border-border/50 text-sm text-text-secondary shadow-sm">
+                            <svg className="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
@@ -232,9 +253,13 @@ export default function Post() {
                         
                         <button 
                             onClick={handleLike}
-                            className={`flex items-center gap-2 transition-colors duration-200 ${userData && (post.likes || []).includes(userData.$id) ? 'text-rose-500 hover:text-rose-600' : 'hover:text-rose-500'}`}
+                            className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-full border text-sm shadow-sm transition-all duration-300 hover:scale-105 active:scale-95 ${
+                                userData && (post.likes || []).includes(userData.$id) 
+                                    ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-900/20 dark:border-rose-800/50 dark:text-rose-400' 
+                                    : 'bg-surface border-border/50 text-text-secondary hover:border-rose-300 hover:text-rose-500'
+                            }`}
                         >
-                            <svg className={`w-5 h-5 ${userData && (post.likes || []).includes(userData.$id) ? 'fill-current' : 'fill-none'}`} stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className={`w-4 h-4 ${userData && (post.likes || []).includes(userData.$id) ? 'fill-current' : 'fill-none'}`} stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
                             <span className="font-medium">{(post.likes || []).length} likes</span>
@@ -244,16 +269,16 @@ export default function Post() {
                         <button
                             onClick={() => setShowShareModal(true)}
                             title="Share this story"
-                            className="group/share flex items-center gap-2 ml-auto px-3.5 py-1.5 rounded-full border border-border hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 text-text-muted hover:text-primary-600 transition-all duration-300"
+                            className="group/share inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-border/50 bg-surface text-text-muted hover:border-primary-400 hover:text-primary-600 shadow-sm transition-all duration-300 hover:scale-105 active:scale-95 ml-auto"
                         >
-                            <svg className="w-4.5 h-4.5 transition-transform duration-300 group-hover/share:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 transition-transform duration-300 group-hover/share:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                             </svg>
                             <span className="text-sm font-semibold">Share</span>
                         </button>
                     </div>
 
-                    <div className="mt-6 h-px bg-border"></div>
+                    <div className="mt-8 h-px bg-gradient-to-r from-transparent via-border to-transparent"></div>
                     <div className="mt-8 prose">
                         {parse(DOMPurify.sanitize(post.content || ''))}
                     </div>

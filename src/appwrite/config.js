@@ -182,13 +182,40 @@ export class Service {
         }
     }
 
-    // User Profile Services
+    async isUsernameTaken(username, excludeUserId = null) {
+        try {
+            if (!conf.appwriteUsersCollectionID || !username) return false;
+            const target = username.trim().toLowerCase();
 
-    async createUserProfile({ userId, username, profilePic }) {
+            const response = await this.databases.listDocuments(
+                conf.appwriteDatabaseID,
+                conf.appwriteUsersCollectionID
+            );
+
+            if (!response || !response.documents) return false;
+
+            const existingDoc = response.documents.find(doc => {
+                const matchName = doc.username && doc.username.trim().toLowerCase() === target;
+                if (!matchName) return false;
+                if (excludeUserId) {
+                    return doc.userId !== excludeUserId && doc.$id !== excludeUserId;
+                }
+                return true;
+            });
+
+            return Boolean(existingDoc);
+        } catch (error) {
+            console.error("Error checking username availability:", error);
+            return false;
+        }
+    }
+
+    async createUserProfile({ userId, username, profilePic, email }) {
         try {
             if (!conf.appwriteUsersCollectionID) throw new Error("Users collection ID is not configured.");
             const data = { userId, username };
             if (profilePic) data.profilePic = profilePic;
+            if (email) data.email = email;
             
             return await this.databases.createDocument(
                 conf.appwriteDatabaseID,
@@ -204,36 +231,64 @@ export class Service {
     async getUserProfile(userId) {
         try {
             if (!conf.appwriteUsersCollectionID) return null;
-            return await this.databases.getDocument(
+            try {
+                const doc = await this.databases.getDocument(
+                    conf.appwriteDatabaseID,
+                    conf.appwriteUsersCollectionID,
+                    userId
+                );
+                if (doc) return doc;
+            } catch {
+                // If not found by document ID, try querying by userId field
+            }
+
+            const list = await this.databases.listDocuments(
                 conf.appwriteDatabaseID,
                 conf.appwriteUsersCollectionID,
-                userId
+                [Query.equal("userId", userId)]
             );
+            return list?.documents?.[0] || null;
         } catch {
-            // It's normal for a user not to have a profile yet (legacy users)
             console.log("No public profile found for user:", userId);
             return null;
         }
     }
 
-    async updateUserProfile(userId, { username, profilePic }) {
+    async updateUserProfile(userId, { username, profilePic, email }) {
         try {
             if (!conf.appwriteUsersCollectionID) throw new Error("Users collection ID is not configured.");
-            const data = {};
-            if (username !== undefined) data.username = username;
-            if (profilePic !== undefined) data.profilePic = profilePic;
+            const updateData = {};
+            if (username !== undefined) updateData.username = username;
+            if (profilePic !== undefined) updateData.profilePic = profilePic;
+            if (email !== undefined && email !== null) updateData.email = email;
 
-            return await this.databases.updateDocument(
-                conf.appwriteDatabaseID,
-                conf.appwriteUsersCollectionID,
-                userId,
-                data
-            );
-        } catch (error) {
-            // If document doesn't exist (404), create it automatically
-            if (error?.code === 404 || error?.status === 404) {
-                return await this.createUserProfile({ userId, username: username || 'Anonymous', profilePic });
+            try {
+                return await this.databases.updateDocument(
+                    conf.appwriteDatabaseID,
+                    conf.appwriteUsersCollectionID,
+                    userId,
+                    updateData
+                );
+            } catch (err) {
+                // If not found by ID (404), search by userId query
+                const existingDocs = await this.databases.listDocuments(
+                    conf.appwriteDatabaseID,
+                    conf.appwriteUsersCollectionID,
+                    [Query.equal("userId", userId)]
+                );
+                if (existingDocs?.documents?.length > 0) {
+                    const targetDocId = existingDocs.documents[0].$id;
+                    return await this.databases.updateDocument(
+                        conf.appwriteDatabaseID,
+                        conf.appwriteUsersCollectionID,
+                        targetDocId,
+                        updateData
+                    );
+                } else {
+                    return await this.createUserProfile({ userId, username: username || 'Anonymous', profilePic, email });
+                }
             }
+        } catch (error) {
             this._handleError('updateUserProfile', error);
         }
     }

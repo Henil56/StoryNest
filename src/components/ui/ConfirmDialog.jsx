@@ -62,38 +62,38 @@ export default function ConfirmDialog({
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-fade-in"
+        className="absolute inset-0 bg-black/70 backdrop-blur-md animate-fade-in transition-opacity duration-300"
         onClick={onCancel}
       />
 
-      {/* Dialog */}
+      {/* Dialog Card */}
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-dialog-title"
-        className="relative w-full max-w-md rounded-2xl bg-surface-elevated shadow-2xl border border-border p-6 animate-slide-up"
+        className="relative w-full max-w-md rounded-3xl bg-surface-elevated/95 dark:bg-[#0F172A]/95 backdrop-blur-xl shadow-2xl border border-border/80 dark:border-white/10 p-6 sm:p-7 animate-scale-up"
       >
         <div className="flex items-start gap-4">
-          <div className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center ${style.iconBg}`}>
+          <div className={`shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${style.iconBg}`}>
             {style.icon}
           </div>
-          <div className="flex-1 min-w-0">
-            <h3 id="confirm-dialog-title" className="text-lg font-bold text-text-primary">
+          <div className="flex-1 min-w-0 pt-0.5">
+            <h3 id="confirm-dialog-title" className="text-xl font-extrabold text-text-primary tracking-tight">
               {title}
             </h3>
-            <p className="mt-1.5 text-sm text-text-muted leading-relaxed">
+            <p className="mt-2 text-sm text-text-muted leading-relaxed">
               {message}
             </p>
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-end gap-3">
+        <div className="mt-7 flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="px-4 py-2.5 text-sm font-medium rounded-xl border border-border text-text-secondary bg-surface-elevated hover:bg-primary-50 dark:hover:bg-surface-dark/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:opacity-50"
+            className="px-5 py-2.5 text-sm font-semibold rounded-xl border border-border text-text-secondary hover:text-text-primary bg-surface/60 hover:bg-surface-elevated active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 disabled:opacity-50"
           >
             {cancelText}
           </button>
@@ -101,10 +101,10 @@ export default function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 ${style.confirmBtn}`}
+            className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl shadow-lg active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-rose-500/40 disabled:opacity-60 ${style.confirmBtn}`}
           >
             {loading && (
-              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
               </svg>
