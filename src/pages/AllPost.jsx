@@ -139,7 +139,7 @@ function AllPost() {
                                 placeholder="Search stories..."
                                 value={searchQuery}
                                 onChange={handleSearchChange}
-                                className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-border bg-surface text-text-primary placeholder:text-text-muted outline-none transition-all duration-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 hover:border-border-hover text-sm"
+                                className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-border bg-surface text-text-primary placeholder:text-text-muted outline-none transition-all duration-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 hover:border-border-hover text-base sm:text-sm"
                             />
                             {searchQuery && (
                                 <button

@@ -27,7 +27,7 @@ export default function RTE({ name, control, label, defaultValue = "", placehold
           const readingTime = Math.max(1, Math.ceil(wordCount / 200))
 
           return (
-            <div>
+            <div className="w-full max-w-full overflow-hidden">
               {/* Header with Stats */}
               <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
@@ -53,7 +53,7 @@ export default function RTE({ name, control, label, defaultValue = "", placehold
               </div>
 
               {/* Editor Frame */}
-              <div className="rounded-2xl overflow-hidden border border-border shadow-md focus-within:border-primary-500 focus-within:ring-4 focus-within:ring-primary-500/15 transition-all duration-300">
+              <div className="rounded-2xl overflow-hidden border border-border shadow-md focus-within:border-primary-500 focus-within:ring-4 focus-within:ring-primary-500/15 transition-all duration-300 w-full overflow-hidden">
                 <Editor
                   key={isDark ? 'dark-editor' : 'light-editor'}
                   apiKey={conf.tinyMceAPIKEY}

@@ -145,33 +145,25 @@ function Header() {
           }`}
         >
           <div className="pt-2 border-t border-white/10">
-            <ul className='flex flex-col gap-1 list-none'>
+            <ul className='flex flex-col gap-1.5 list-none'>
               {navItems.map((item) =>
                 item.active ? (
                   <li key={item.name}>
                     <button
                       onClick={() => { navigate(item.slug); setMobileOpen(false); }}
-                      className={`w-full text-left flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
+                      className={`w-full text-left flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-2xl text-base font-bold transition-all duration-300 active:scale-98 ${
                         pathname === item.slug
                           ? 'bg-[#B0E0E6] border border-white/40 text-[#17304D] shadow-sm dark:bg-[#3D0E2D] dark:border-[#9D174D] dark:text-[#FBCFE8]'
                           : 'text-white/80 hover:bg-white/10 hover:text-white'
                       }`}
                     >
-                      {item.isProfile && item.profilePic && !profileImgError ? (
+                      {item.isProfile ? (
                         <img 
-                          src={appwriteService.getFilePreview(item.profilePic)} 
+                          src={getAvatarUrl(userProfile?.profilePic, userProfile?.email || userData?.email, userProfile?.username || userData?.name)} 
                           alt="Profile" 
-                          onError={() => setProfileImgError(true)}
+                          referrerPolicy="no-referrer"
                           className="w-7 h-7 rounded-full object-cover border border-white/30"
                         />
-                      ) : item.isProfile ? (
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
-                          pathname === item.slug
-                            ? 'bg-[#17304D] text-[#B0E0E6] border border-[#17304D] dark:bg-[#FBCFE8] dark:text-[#3D0E2D] dark:border-[#FBCFE8]'
-                            : 'bg-white/20 text-white border border-white/30'
-                        }`}>
-                          {item.username?.charAt(0)?.toUpperCase() || 'P'}
-                        </div>
                       ) : null}
                       {item.isProfile ? item.username || 'Profile' : item.name}
                     </button>
@@ -179,7 +171,7 @@ function Header() {
                 ) : null
               )}
               {authStatus && (
-                <li className="mt-2 border-t border-white/10 pt-3 px-2">
+                <li className="mt-2 border-t border-white/10 pt-3 px-1">
                   <LogoutBtn />
                 </li>
               )}

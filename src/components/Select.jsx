@@ -81,7 +81,7 @@ function Select({
                 onClick={() => setIsOpen(!isOpen)}
                 className={`w-full px-4 py-3 rounded-xl border border-border bg-surface-elevated text-left text-text-primary shadow-sm outline-none transition-all duration-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-500/10 hover:border-border-hover hover:shadow-md appearance-none pr-10 relative ${className}`}
             >
-                <span className={`block truncate text-sm ${!selected ? 'text-text-muted' : ''}`}>
+                <span className={`block truncate text-base sm:text-sm ${!selected ? 'text-text-muted' : ''}`}>
                     {selected || placeholder || (options && options[0])}
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-text-muted">

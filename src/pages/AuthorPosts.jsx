@@ -271,8 +271,8 @@ export default function AuthorPosts() {
                         Back to Home
                     </Link>
 
-                    <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-                        <div className="flex items-center gap-5">
+                    <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-center justify-between gap-5 text-center sm:text-left">
+                        <div className="flex flex-col sm:flex-row items-center gap-5">
                             {/* Avatar */}
                             <div 
                                 onClick={() => isOwnProfile && setIsEditing(true)}
