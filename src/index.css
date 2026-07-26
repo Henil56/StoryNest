@@ -560,7 +560,12 @@ img {
   display: inline-block;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #17304D;
+  background: linear-gradient(135deg, #17304D 0%, #4682B4 30%, #0284C7 60%, #17304D 100%);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: storynest-gradient 4s ease infinite, storynest-glow-pulse 3s ease-in-out infinite;
   cursor: default;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
 }
@@ -591,7 +596,12 @@ img {
 
 /* Dark mode variant */
 :root.dark .storynest-brand {
-  color: #FBCFE8;
+  background: linear-gradient(135deg, #fbbf24 0%, #f472b6 25%, #a78bfa 50%, #38bdf8 75%, #fbbf24 100%);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: storynest-gradient 4s ease infinite, storynest-glow-pulse-dark 3s ease-in-out infinite;
 }
 
 :root.dark .storynest-brand::after {

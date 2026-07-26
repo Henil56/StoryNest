@@ -85,7 +85,7 @@ function Home() {
                         {/* Headline — Full Width */}
                         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-[#0F2942] dark:text-white leading-[1.15] tracking-tight max-w-4xl">
                             There's a story inside you <br className="hidden sm:block" />
-                            <span className="text-primary-600 dark:text-primary-300">
+                            <span className="bg-gradient-to-r from-[#0F2942] via-[#2B5D8C] to-[#407B9E] dark:from-amber-200 dark:via-rose-200 dark:to-sky-200 bg-clip-text text-transparent">
                                 that someone, somewhere, is waiting to read.
                             </span>
                         </h1>
