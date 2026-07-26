@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form"
 import { useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
 import { apiSlice } from '../store/apiSlice'
+import { rateLimiter } from '../utils/rateLimiter'
 
 function Login() {
     const navigate = useNavigate()
@@ -16,6 +17,13 @@ function Login() {
     const [loading, setLoading] = useState(false)
 
     const login = async (data) => {
+        // Check rate limits for Auth route (per-IP + per-account with exponential backoff)
+        const rateCheck = rateLimiter.checkAuthLimit('login', data.email)
+        if (!rateCheck.allowed) {
+            toast.error(rateCheck.errorMessage, { duration: 5000 })
+            return
+        }
+
         setLoading(true)
         try {
             const session = await authService.login(data)
@@ -33,10 +41,12 @@ function Login() {
                     }
                     dispatch(authLogin({ userData }));
                 }
+                rateLimiter.recordAuthSuccess('login', data.email)
                 toast.success('Successfully logged in!')
                 navigate("/")
             }
         } catch (error) {
+            rateLimiter.recordAuthFailure('login', data.email)
             const isInvalidCredentials = error?.code === 401 || error?.message?.toLowerCase().includes('invalid credentials');
             const errorMessage = isInvalidCredentials 
                 ? 'Authentication failed. Please verify your email and password, or create a new account.' 

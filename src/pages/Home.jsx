@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useGetPostsQuery } from '../store/apiSlice'
+import { rateLimiter } from '../utils/rateLimiter'
 
 function Home() {
     const isLoggedIn = useSelector((state) => state.auth.status)
@@ -23,6 +24,13 @@ function Home() {
     const handleSubscribe = async (e) => {
         e.preventDefault();
         if (!email) return;
+
+        const rateCheck = rateLimiter.checkPublicLimit('newsletter_subscribe');
+        if (!rateCheck.allowed) {
+            setSubscribeStatus('idle');
+            setSubscribeError(rateCheck.errorMessage);
+            return;
+        }
 
         setSubscribeStatus('loading');
         setSubscribeError('');

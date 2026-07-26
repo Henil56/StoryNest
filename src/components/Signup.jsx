@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import { getAvatarUrl } from '../utils/avatar'
 import { apiSlice } from '../store/apiSlice'
+import { rateLimiter } from '../utils/rateLimiter'
 
 function Signup() {
     const navigate = useNavigate()
@@ -52,6 +53,13 @@ function Signup() {
     }, [isGoogleNew, currentUser, location.state, setValue])
 
     const create = async (data) => {
+        // Rate limit check for Auth signup route
+        const rateCheck = rateLimiter.checkAuthLimit('signup', data.email)
+        if (!rateCheck.allowed) {
+            toast.error(rateCheck.errorMessage, { duration: 5000 })
+            return
+        }
+
         setLoading(true)
         try {
             // Check username uniqueness

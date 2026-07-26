@@ -4,7 +4,9 @@ import { Button, Input, Select, RTE } from '../index'
 import appwriteService from '../../appwrite/config'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import toast from 'react-hot-toast'
 import { apiSlice } from '../../store/apiSlice'
+import { rateLimiter } from '../../utils/rateLimiter'
 
 const CATEGORIES = [
     "Technology",
@@ -124,6 +126,15 @@ function PostForm({ post }) {
 
     const submit = async (data) => {
         setSubmitError("")
+
+        // Authenticated action rate limit check
+        const rateCheck = rateLimiter.checkAuthenticatedLimit(post ? 'edit_post' : 'create_post', userData?.$id);
+        if (!rateCheck.allowed) {
+            setSubmitError(rateCheck.errorMessage);
+            toast.error(rateCheck.errorMessage, { duration: 5000 });
+            return;
+        }
+
         setLoading(true)
         try {
             if (post) {

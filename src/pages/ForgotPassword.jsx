@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import authService from '../appwrite/auth';
 import { Button, Input, Logo } from '../components';
 import toast from 'react-hot-toast';
+import { rateLimiter } from '../utils/rateLimiter';
 
 function ForgotPassword() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -11,12 +12,21 @@ function ForgotPassword() {
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     const submit = async (data) => {
+        // Rate limit check for Auth password recovery route
+        const rateCheck = rateLimiter.checkAuthLimit('password_reset', data.email);
+        if (!rateCheck.allowed) {
+            toast.error(rateCheck.errorMessage, { duration: 5000 });
+            return;
+        }
+
         setLoading(true);
         try {
             await authService.sendPasswordRecovery(data.email);
+            rateLimiter.recordAuthSuccess('password_reset', data.email);
             setIsSubmitted(true);
             toast.success('Recovery email sent! Please check your inbox.');
         } catch (error) {
+            rateLimiter.recordAuthFailure('password_reset', data.email);
             toast.error(error.message || 'Failed to send recovery email');
         } finally {
             setLoading(false);
