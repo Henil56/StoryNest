@@ -4,9 +4,14 @@ import { useForm } from 'react-hook-form';
 import authService from '../appwrite/auth';
 import { Button, Input, Logo } from '../components';
 import toast from 'react-hot-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { resetPasswordSchema } from '../utils/validationSchemas';
+import { rateLimiter } from '../utils/rateLimiter';
 
 function ResetPassword() {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: zodResolver(resetPasswordSchema)
+    });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -24,12 +29,20 @@ function ResetPassword() {
     }, [userId, secret, navigate]);
 
     const submit = async (data) => {
+        const rateCheck = rateLimiter.checkAuthLimit('reset_password', userId);
+        if (!rateCheck.allowed) {
+            toast.error(rateCheck.errorMessage, { duration: 5000 });
+            return;
+        }
+
         setLoading(true);
         try {
-            await authService.resetPassword(userId, secret, data.password, data.passwordAgain);
+            await authService.resetPassword(userId, secret, data.password, data.password);
+            rateLimiter.recordAuthSuccess('reset_password', userId);
             toast.success('Password updated successfully! You can now log in.');
             navigate('/login');
         } catch (error) {
+            rateLimiter.recordAuthFailure('reset_password', userId);
             toast.error(error.message || 'Failed to reset password');
         } finally {
             setLoading(false);

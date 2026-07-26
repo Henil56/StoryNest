@@ -10,6 +10,8 @@ import toast from 'react-hot-toast'
 import { getAvatarUrl } from '../utils/avatar'
 import { apiSlice } from '../store/apiSlice'
 import { rateLimiter } from '../utils/rateLimiter'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { signupSchema, googleSignupSchema, validateImageFile } from '../utils/validationSchemas'
 
 function Signup() {
     const navigate = useNavigate()
@@ -21,6 +23,7 @@ function Signup() {
     const isGoogleNew = location.state?.isGoogleNew || searchParams.get('googleNew') === 'true'
 
     const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm({
+        resolver: zodResolver(isGoogleNew ? googleSignupSchema : signupSchema),
         defaultValues: {
             username: location.state?.name || currentUser?.name || '',
             email: location.state?.email || currentUser?.email || ''
@@ -32,6 +35,12 @@ function Signup() {
     const handleFileChange = (e) => {
         const file = e.target.files?.[0]
         if (file) {
+            const fileCheck = validateImageFile(file)
+            if (!fileCheck.valid) {
+                toast.error(fileCheck.message)
+                e.target.value = ''
+                return
+            }
             setPreviewUrl(URL.createObjectURL(file))
         } else {
             setPreviewUrl(null)

@@ -9,11 +9,15 @@ import { useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
 import { apiSlice } from '../store/apiSlice'
 import { rateLimiter } from '../utils/rateLimiter'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { loginSchema } from '../utils/validationSchemas'
 
 function Login() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const { register, handleSubmit, formState: { errors } } = useForm()
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: zodResolver(loginSchema)
+    })
     const [loading, setLoading] = useState(false)
 
     const login = async (data) => {

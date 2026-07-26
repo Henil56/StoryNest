@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import toast from 'react-hot-toast'
 import { apiSlice } from '../../store/apiSlice'
 import { rateLimiter } from '../../utils/rateLimiter'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { postSchema, validateImageFile } from '../../utils/validationSchemas'
 
 const CATEGORIES = [
     "Technology",
@@ -44,6 +46,7 @@ function PostForm({ post }) {
     })() : null
 
     const { register, handleSubmit, watch, setValue, control, getValues, formState: { errors } } = useForm({
+        resolver: zodResolver(postSchema),
         defaultValues: {
             title: post?.title || savedDraft?.title || '',
             slug: post?.slug || savedDraft?.slug || '',
@@ -132,6 +135,21 @@ function PostForm({ post }) {
         if (!rateCheck.allowed) {
             setSubmitError(rateCheck.errorMessage);
             toast.error(rateCheck.errorMessage, { duration: 5000 });
+            return;
+        }
+
+        // Strict Image File Validation (Type, Length, Format)
+        const selectedFile = data.image?.[0];
+        if (selectedFile) {
+            const fileCheck = validateImageFile(selectedFile);
+            if (!fileCheck.valid) {
+                setSubmitError(fileCheck.message);
+                toast.error(fileCheck.message, { duration: 5000 });
+                return;
+            }
+        } else if (!post) {
+            setSubmitError("Featured image is required to publish a story.");
+            toast.error("Featured image is required to publish a story.");
             return;
         }
 
