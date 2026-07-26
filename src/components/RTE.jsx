@@ -56,7 +56,8 @@ export default function RTE({ name, control, label, defaultValue = "", placehold
               <div className="rounded-2xl overflow-hidden border border-border shadow-md focus-within:border-primary-500 focus-within:ring-4 focus-within:ring-primary-500/15 transition-all duration-300 w-full overflow-hidden">
                 <Editor
                   key={isDark ? 'dark-editor' : 'light-editor'}
-                  apiKey={conf.tinyMceAPIKEY}
+                  apiKey={conf.tinyMceAPIKEY && conf.tinyMceAPIKEY !== 'undefined' ? conf.tinyMceAPIKEY : 'no-api-key'}
+                  tinymceScriptSrc="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"
                   initialValue={defaultValue}
                   value={value}
                   init={{
