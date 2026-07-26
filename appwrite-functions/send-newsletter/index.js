@@ -67,7 +67,7 @@ module.exports = async function ({ req, res, log, error }) {
     log(`Sending emails to ${emails.length} subscribers...`);
 
     // 3. Send the email
-    const siteUrl = process.env.VITE_SITE_URL || 'https://story-nest-steel.vercel.app';
+    const siteUrl = process.env.VITE_SITE_URL || 'https://storynest56.vercel.app';
     const postUrl = eventData.$id ? `${siteUrl}/post/${eventData.$id}` : siteUrl;
 
     await transporter.sendMail({
@@ -98,11 +98,11 @@ module.exports = async function ({ req, res, log, error }) {
         <body>
           <div class="container">
             <div class="header" style="text-align: center; padding: 40px 10px;">
-              <a href="https://story-nest-steel.vercel.app" style="text-decoration: none; display: inline-block; cursor: default;" onclick="return false;">
+              <a href="${siteUrl}" target="_blank" style="text-decoration: none; display: inline-block;">
                 <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                   <tr>
                     <td style="vertical-align: middle;">
-                      <img src="https://story-nest-steel.vercel.app/LOGO.png" alt="StoryNest Logo" style="height: 100px; width: auto; display: block; border: none;">
+                      <img src="${siteUrl}/LOGO.png" alt="StoryNest Logo" style="height: 100px; width: auto; display: block; border: none;">
                     </td>
                     <td style="vertical-align: middle; padding-left: 20px; text-align: center;">
                       <div style="font-size: 42px; font-weight: normal; color: rgb(203, 197, 175); font-family: Georgia, 'Times New Roman', serif; letter-spacing: 1px; line-height: 1; margin: 0;">StoryNest</div>
@@ -131,7 +131,7 @@ module.exports = async function ({ req, res, log, error }) {
               <div class="story-card">
                 <h3 class="story-title">${eventData.title}</h3>
                 <p style="margin-bottom: 25px; color: #64748b; font-size: 15px;">Read the full story by clicking the button below.</p>
-                <a href="${postUrl}" class="btn">Read Story Now</a>
+                <a href="${postUrl}" target="_blank" rel="noopener noreferrer" class="btn">Read Story Now</a>
               </div>
               
               <p>Happy reading,<br>The StoryNest Team</p>
