@@ -28,9 +28,42 @@ export default function Post() {
     const hasIncrementedView = useRef(false);
     const articleRef = useRef(null);
 
+    const [imageColor, setImageColor] = useState(null);
+
     const { data: authorProfile } = useGetUserProfileQuery(post?.userId, { skip: !post?.userId });
 
     const isAuthor = post && userData ? post.userId === userData.$id : false;
+
+    // Extract dominant ambient color from featured image
+    useEffect(() => {
+        if (!post?.featuredImage) return;
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = appwriteService.getFilePreview(post.featuredImage, 200, 0, 100);
+        img.onload = () => {
+            try {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.width = 16;
+                canvas.height = 16;
+                ctx.drawImage(img, 0, 0, 16, 16);
+                const data = ctx.getImageData(0, 0, 16, 16).data;
+                let r = 0, g = 0, b = 0, count = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    r += data[i];
+                    g += data[i + 1];
+                    b += data[i + 2];
+                    count++;
+                }
+                r = Math.round(r / count);
+                g = Math.round(g / count);
+                b = Math.round(b / count);
+                setImageColor({ r, g, b });
+            } catch (e) {
+                // Fallback gracefully if CORS prevents canvas pixel reading
+            }
+        };
+    }, [post?.featuredImage]);
 
     useEffect(() => {
         if (postError) {
@@ -151,20 +184,40 @@ export default function Post() {
             />
 
             {/* Hero Image Section with Dynamic Photo-Derived Ambient Background */}
-            <div className="relative w-full py-10 sm:py-16 overflow-hidden bg-[#0A0F1D] dark:bg-[#070A14] flex items-center justify-center">
+            <div 
+                className="relative w-full py-10 sm:py-16 overflow-hidden flex items-center justify-center border-b border-border/40 transition-all duration-700"
+                style={{
+                    backgroundColor: imageColor 
+                        ? `rgba(${imageColor.r}, ${imageColor.g}, ${imageColor.b}, 0.18)`
+                        : undefined
+                }}
+            >
                 {/* Dynamic Ambient Background Derived From Photo */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    {/* Blurred Featured Image Layer */}
                     <div 
-                        className="absolute inset-0 opacity-60 dark:opacity-50 blur-3xl scale-125 saturate-150 transition-all duration-700"
+                        className="absolute inset-0 opacity-75 dark:opacity-65 blur-3xl scale-150 saturate-200 transition-all duration-700"
                         style={{ 
                             backgroundImage: `url(${appwriteService.getFilePreview(post.featuredImage, 400, 0, 100)})`,
                             backgroundPosition: 'center',
                             backgroundSize: 'cover'
                         }}
                     ></div>
-                    {/* Vignette overlays for smooth blend */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1D] via-transparent to-[#0A0F1D]/80 dark:from-[#070A14] dark:to-[#070A14]/80"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1D]/60 via-transparent to-[#0A0F1D]/60 dark:from-[#070A14]/60 dark:to-[#070A14]/60"></div>
+
+                    {/* Radial Extracted Color Glow */}
+                    {imageColor && (
+                        <div 
+                            className="absolute inset-0 transition-opacity duration-700"
+                            style={{
+                                background: `radial-gradient(circle at center, rgba(${imageColor.r}, ${imageColor.g}, ${imageColor.b}, 0.45) 0%, transparent 80%)`
+                            }}
+                        />
+                    )}
+
+                    {/* Soft Vignette & Theme Blending Overlays */}
+                    <div className="absolute inset-0 bg-white/35 dark:bg-black/55 backdrop-blur-xl transition-colors duration-500"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-surface/80"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-surface/60 via-transparent to-surface/60"></div>
                 </div>
                 
                 {/* Image */}
@@ -173,7 +226,7 @@ export default function Post() {
                         src={appwriteService.getFilePreview(post.featuredImage, 1200, 0, 100)}
                         alt={post.title}
                         loading="lazy"
-                        className="relative z-10 w-full max-h-[600px] object-contain rounded-2xl border border-white/20 dark:border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] backdrop-blur-xl transition-all duration-500 ease-out group-hover:shadow-[0_35px_70px_-15px_rgba(0,0,0,0.85)] group-hover:border-white/30"
+                        className="relative z-10 w-full max-h-[600px] object-contain rounded-2xl border border-white/60 dark:border-white/15 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] backdrop-blur-xl transition-all duration-500 ease-out group-hover:shadow-[0_30px_70px_-15px_rgba(0,0,0,0.35)] dark:group-hover:shadow-[0_35px_75px_-15px_rgba(0,0,0,0.9)] group-hover:border-white/90 dark:group-hover:border-white/30"
                     />
                 </div>
                 
