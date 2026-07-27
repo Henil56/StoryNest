@@ -77,7 +77,7 @@ function Header() {
       <Container>
         <nav className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-18 md:h-20' : 'h-20 md:h-22'}`}>
           <div className='flex items-center'>
-            <Link to='/' aria-label="StoryNest Home" className="flex items-center py-1 transition-transform duration-300 hover:scale-[1.02] active:scale-95">
+            <Link to='/' aria-label="StoryNest Home" className="flex items-center pt-2.5 pb-0.5 mt-1 transition-transform duration-300 hover:scale-[1.02] active:scale-95">
               <Logo width="170px" variant='dark' className="h-auto object-contain" />
             </Link>
           </div>
