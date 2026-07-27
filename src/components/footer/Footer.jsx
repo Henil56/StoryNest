@@ -28,7 +28,7 @@ function Footer() {
           <div className="lg:col-span-4 flex flex-col justify-between">
             <div>
               <div className="mb-4 inline-block">
-                <Logo width="170px" variant="auto" className="h-auto object-contain" />
+                <Logo width="220px" variant="auto" className="h-auto object-contain" />
               </div>
               <p className="text-[#2E4A62] dark:text-slate-400 text-sm leading-relaxed max-w-sm mt-2">
                 Create. Read. Inspire.<br />
@@ -67,8 +67,7 @@ function Footer() {
 
           {/* Quick Links Column */}
           <div className="lg:col-span-2 lg:col-start-6">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-[#17304D] dark:text-pink-300/90 mb-5 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4682B4] dark:bg-pink-400"></span>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[#17304D] dark:text-pink-300/90 mb-5">
               Navigation
             </h3>
             <ul className="space-y-3 list-none p-0 m-0">
@@ -112,8 +111,7 @@ function Footer() {
 
           {/* Connect Column */}
           <div className="lg:col-span-2">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-[#17304D] dark:text-pink-300/90 mb-5 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4682B4] dark:bg-pink-400"></span>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[#17304D] dark:text-pink-300/90 mb-5">
               Connect
             </h3>
             <ul className="space-y-3 list-none p-0 m-0">
@@ -134,8 +132,7 @@ function Footer() {
 
           {/* Legal Column */}
           <div className="lg:col-span-2">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-[#17304D] dark:text-pink-300/90 mb-5 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4682B4] dark:bg-pink-400"></span>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-[#17304D] dark:text-pink-300/90 mb-5">
               Legal
             </h3>
             <ul className="space-y-3 list-none p-0 m-0">
