@@ -68,17 +68,17 @@ function Header() {
 
   return (
     <header 
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`sticky top-0 z-50 transition-all duration-500 ${
         isScrolled 
-          ? 'border-b border-white/10 bg-[#17304D]/90 dark:bg-[#0F172A]/80 backdrop-blur-xl shadow-lg shadow-[#17304D]/10 dark:shadow-black/20' 
-          : 'border-b border-transparent bg-[#17304D] dark:bg-[#0F172A]'
+          ? 'border-b border-white/15 dark:border-white/10 bg-[#17304D]/80 dark:bg-[#0a0314]/75 backdrop-blur-xl backdrop-saturate-150 shadow-[0_8px_32px_0_rgba(15,23,42,0.25)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]' 
+          : 'border-b border-transparent bg-[#17304D] dark:bg-[#0a0314]'
       }`}
     >
       <Container>
-        <nav className='flex items-center justify-between h-20'>
+        <nav className={`flex items-center justify-between transition-all duration-300 ${isScrolled ? 'h-18 md:h-20' : 'h-20 md:h-22'}`}>
           <div className='flex items-center'>
-            <Link to='/' aria-label="StoryNest Home" className="flex items-center pt-3 pb-1 transition-transform duration-300">
-              <Logo size='xs' variant='dark' />
+            <Link to='/' aria-label="StoryNest Home" className="flex items-center py-1 transition-transform duration-300 hover:scale-[1.02] active:scale-95">
+              <Logo width="170px" variant='dark' className="h-auto object-contain" />
             </Link>
           </div>
           
@@ -89,7 +89,7 @@ function Header() {
                   <li key={item.name}>
                     <button
                       onClick={() => navigate(item.slug)}
-                      className={`group relative inline-flex items-center gap-2 px-4.5 py-2 text-sm font-bold rounded-full transition-all duration-300 active:scale-95 ${
+                      className={`group relative inline-flex items-center gap-2 px-3.5 py-1.5 text-sm font-bold rounded-full transition-all duration-300 active:scale-95 ${
                         pathname === item.slug
                           ? 'bg-[#B0E0E6] border border-white/40 text-[#17304D] shadow-md shadow-[#B0E0E6]/30 dark:bg-[#3D0E2D] dark:border-[#9D174D] dark:text-[#FBCFE8] dark:shadow-[#9D174D]/25 scale-[1.02]'
                           : 'text-white/80 hover:text-white border border-transparent hover:border-white/15 hover:bg-white/10 hover:-translate-y-0.5 shadow-none'
@@ -179,6 +179,12 @@ function Header() {
           </div>
         </div>
       </Container>
+      {isScrolled && (
+        <div 
+          className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-400/40 dark:via-primary-500/50 to-transparent pointer-events-none transition-opacity duration-500"
+          aria-hidden="true"
+        />
+      )}
     </header>
   )
 }

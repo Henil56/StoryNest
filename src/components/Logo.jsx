@@ -4,7 +4,7 @@ import logoDarkSrc from '../assets/LOGO_DARK.png'
 
 function Logo({ width, size = 'medium', className = '', alt = 'StoryNest logo', variant = 'auto' }) {
   const sizeMap = {
-    xs: '150px',
+    xs: '165px',
     small: '280px',
     medium: '300px',
     large: '380px',
