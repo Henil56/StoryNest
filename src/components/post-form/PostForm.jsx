@@ -278,9 +278,13 @@ function PostForm({ post }) {
 
     return (
         <div className="animate-fade-in relative">
+            {/* Ambient Background Glow Orbs for Glass Refraction */}
+            <div className="absolute -top-16 left-1/4 w-[500px] h-[350px] bg-sky-400/20 dark:bg-pink-600/15 blur-[130px] rounded-full pointer-events-none animate-float" />
+            <div className="absolute top-1/2 right-0 w-[450px] h-[350px] bg-blue-500/15 dark:bg-purple-700/15 blur-[140px] rounded-full pointer-events-none" />
+
             {/* Draft restored — subtle inline pill */}
             {hasDraft && (
-                <div className="mb-5 flex items-center gap-2 px-4 py-2.5 rounded-full bg-surface-elevated border border-border/60 shadow-sm w-fit mx-auto animate-slide-up">
+                <div className="mb-5 flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/70 dark:bg-[#110722]/70 backdrop-blur-xl border border-white/60 dark:border-white/10 shadow-md w-fit mx-auto animate-slide-up relative z-10">
                     <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                     </svg>
@@ -298,7 +302,7 @@ function PostForm({ post }) {
                             setImagePreview(null)
                             setDraftDismissed(true)
                         }}
-                        className="text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200"
+                        className="text-sm font-medium text-primary-600 dark:text-pink-400 hover:text-primary-700 dark:hover:text-pink-300 transition-colors duration-200"
                     >
                         Discard
                     </button>
@@ -315,15 +319,19 @@ function PostForm({ post }) {
             )}
 
             {submitError && (
-                <div className="mb-6 flex items-center gap-2 p-3 rounded-lg bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 text-sm text-danger">
+                <div className="mb-6 flex items-center gap-2 p-3.5 rounded-2xl bg-rose-50/80 dark:bg-rose-900/30 backdrop-blur-md border border-rose-200 dark:border-rose-800 text-sm text-danger shadow-sm relative z-10">
                     <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
                     {submitError}
                 </div>
             )}
 
-            <form onSubmit={handleSubmit(submit)} className="flex flex-col lg:flex-row gap-8 items-start" noValidate>
-                <div className="flex-1 w-full space-y-6 rounded-3xl bg-surface-elevated p-6 sm:p-8 shadow-xl shadow-primary-500/5 border border-border/50">
+            <form onSubmit={handleSubmit(submit)} className="flex flex-col lg:flex-row gap-8 items-start relative z-10" noValidate>
+                {/* Left Section - Title, Slug, Content */}
+                <div className="flex-1 w-full space-y-6 rounded-3xl bg-white/70 dark:bg-[#110722]/60 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl shadow-sky-500/10 dark:shadow-pink-500/5 border border-white/60 dark:border-white/10 relative overflow-hidden group/card transition-all duration-500 hover:border-primary-300/60 dark:hover:border-white/20">
+                    {/* Top Specular Highlight Line */}
+                    <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary-400/40 dark:via-pink-500/40 to-transparent pointer-events-none" />
+
                     <Input
                         label="Title"
                         placeholder="Give your story a title"
@@ -346,7 +354,12 @@ function PostForm({ post }) {
                     />
                     <RTE label="Content" name="content" control={control} defaultValue={getValues("content")} />
                 </div>
-                <div className="w-full lg:w-[340px] xl:w-[380px] shrink-0 space-y-6 rounded-3xl bg-surface-elevated p-6 sm:p-8 shadow-xl shadow-primary-500/5 border border-border/50 lg:sticky lg:top-28">
+
+                {/* Right Sidebar - Image, Category, Status, Action Button */}
+                <div className="w-full lg:w-[340px] xl:w-[380px] shrink-0 space-y-6 rounded-3xl bg-white/70 dark:bg-[#110722]/60 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl shadow-sky-500/10 dark:shadow-pink-500/5 border border-white/60 dark:border-white/10 lg:sticky lg:top-28 relative overflow-hidden group/card transition-all duration-500 hover:border-primary-300/60 dark:hover:border-white/20">
+                    {/* Top Specular Highlight Line */}
+                    <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-primary-400/40 dark:via-pink-500/40 to-transparent pointer-events-none" />
+
                     <div>
                         <label className="inline-flex items-center gap-1 mb-1.5 pl-0.5 text-sm font-medium text-text-secondary">
                             Featured Image
@@ -356,20 +369,20 @@ function PostForm({ post }) {
                         {/* Image Preview or Upload Zone */}
                         {imagePreview ? (
                             /* ── Preview State ── */
-                            <div className="mt-2 rounded-2xl overflow-hidden border-2 border-primary-300 dark:border-primary-700 shadow-md">
+                            <div className="mt-2 rounded-2xl overflow-hidden border-2 border-primary-300/80 dark:border-pink-500/40 shadow-lg backdrop-blur-md">
                                 {/* Image container */}
-                                <div className="relative group bg-black/5 dark:bg-black/30">
+                                <div className="relative group bg-black/5 dark:bg-black/40">
                                     <img
                                         src={imagePreview}
                                         alt="Preview"
                                         className="w-full max-h-[220px] object-contain"
                                     />
                                     {/* Hover overlay with actions */}
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100">
+                                    <div className="absolute inset-0 bg-black/40 backdrop-blur-xs transition-all duration-300 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100">
                                         <button
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
-                                            className="px-4 py-2 rounded-xl bg-white/90 text-gray-800 text-sm font-medium backdrop-blur-sm hover:bg-white transition-all duration-200 shadow-lg hover:scale-105"
+                                            className="px-4 py-2 rounded-xl bg-white/95 text-gray-900 text-sm font-medium backdrop-blur-md hover:bg-white transition-all duration-200 shadow-lg hover:scale-105"
                                         >
                                             <span className="flex items-center gap-1.5">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -381,7 +394,7 @@ function PostForm({ post }) {
                                         <button
                                             type="button"
                                             onClick={removePreview}
-                                            className="px-4 py-2 rounded-xl bg-rose-500/90 text-white text-sm font-medium backdrop-blur-sm hover:bg-rose-600 transition-all duration-200 shadow-lg hover:scale-105"
+                                            className="px-4 py-2 rounded-xl bg-rose-500/90 text-white text-sm font-medium backdrop-blur-md hover:bg-rose-600 transition-all duration-200 shadow-lg hover:scale-105"
                                         >
                                             <span className="flex items-center gap-1.5">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -393,7 +406,7 @@ function PostForm({ post }) {
                                     </div>
                                 </div>
                                 {/* Status bar below image */}
-                                <div className="px-4 py-2 bg-emerald-500/10 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2">
+                                <div className="px-4 py-2.5 bg-emerald-500/10 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-2 border-t border-emerald-500/20">
                                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                                     </svg>
@@ -408,22 +421,22 @@ function PostForm({ post }) {
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
                                 onDrop={handleDrop}
-                                className={`mt-2 rounded-2xl border-2 border-dashed transition-all duration-300 p-8 text-center group cursor-pointer ${
+                                className={`mt-2 rounded-2xl border-2 border-dashed transition-all duration-300 p-8 text-center group cursor-pointer backdrop-blur-md ${
                                     isDragging
-                                        ? 'border-primary-500 bg-primary-100/50 dark:bg-primary-900/30 scale-[1.02] shadow-lg shadow-primary-500/10'
+                                        ? 'border-primary-500 bg-primary-100/60 dark:bg-pink-500/20 scale-[1.02] shadow-xl shadow-primary-500/20 dark:shadow-pink-500/20'
                                         : errors.image
-                                            ? 'border-rose-400 bg-rose-50/50 dark:bg-rose-900/20'
-                                            : 'border-primary-200 bg-primary-50/30 hover:bg-primary-50/80 hover:border-primary-400 hover:shadow-md dark:border-primary-900/50 dark:bg-primary-900/10 dark:hover:bg-primary-900/30'
+                                            ? 'border-rose-400 bg-rose-50/60 dark:bg-rose-900/25'
+                                            : 'border-primary-300/70 bg-white/40 dark:bg-white/[0.03] hover:bg-white/80 dark:hover:bg-white/[0.08] hover:border-primary-500 dark:border-white/15 dark:hover:border-pink-400/60 hover:shadow-lg hover:shadow-primary-500/10 dark:hover:shadow-pink-500/10'
                                 }`}
                             >
-                                <svg className={`mx-auto w-12 h-12 mb-4 transition-all duration-300 ${isDragging ? 'text-primary-500 scale-125' : 'text-primary-400 group-hover:scale-110 group-hover:text-primary-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className={`mx-auto w-12 h-12 mb-4 transition-all duration-300 ${isDragging ? 'text-primary-500 scale-125' : 'text-primary-400 dark:text-pink-400/80 group-hover:scale-110 group-hover:text-primary-500 dark:group-hover:text-pink-300'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                                 <p className="text-sm text-text-muted mb-1">
                                     {isDragging ? (
-                                        <span className="text-primary-600 dark:text-primary-400 font-medium">Drop your image here</span>
+                                        <span className="text-primary-600 dark:text-pink-300 font-semibold">Drop your image here</span>
                                     ) : (
-                                        <>Click to upload or <span className="text-primary-600 dark:text-primary-400 font-medium">drag and drop</span></>
+                                        <>Click to upload or <span className="text-primary-600 dark:text-pink-300 font-semibold">drag and drop</span></>
                                     )}
                                 </p>
                                 <p className="text-xs text-text-muted">PNG, JPG, GIF</p>
@@ -462,7 +475,7 @@ function PostForm({ post }) {
                             <img
                                 src={appwriteService.getFilePreview(post.featuredImage)}
                                 alt={post.title}
-                                className="rounded-xl border border-border"
+                                className="rounded-xl border border-border shadow-sm"
                             />
                         </div>
                     )}
@@ -473,19 +486,19 @@ function PostForm({ post }) {
                         className=""
                         {...register("category")}
                     />
-                    {/* Status Segmented Switch */}
+                    {/* Status Segmented Switch with Glass Styling */}
                     <div>
                         <label className="inline-block mb-1.5 pl-0.5 text-sm font-semibold text-text-secondary">
                             Visibility Status
                         </label>
-                        <div className="grid grid-cols-2 gap-2 p-1.5 bg-surface rounded-2xl border border-border/60">
+                        <div className="grid grid-cols-2 gap-2 p-1.5 bg-surface/70 dark:bg-black/40 backdrop-blur-md rounded-2xl border border-border/50 dark:border-white/10 shadow-inner">
                             <button
                                 type="button"
                                 onClick={() => setValue('status', 'active', { shouldValidate: true })}
-                                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-300 ${
                                     watch('status') === 'active'
-                                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                                        : 'text-text-muted hover:text-text-primary hover:bg-surface-elevated/50'
+                                        ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 scale-[1.02]'
+                                        : 'text-text-muted hover:text-text-primary hover:bg-white/40 dark:hover:bg-white/5'
                                 }`}
                             >
                                 <span className={`w-2 h-2 rounded-full ${watch('status') === 'active' ? 'bg-white animate-pulse' : 'bg-emerald-500'}`} />
@@ -494,10 +507,10 @@ function PostForm({ post }) {
                             <button
                                 type="button"
                                 onClick={() => setValue('status', 'inactive', { shouldValidate: true })}
-                                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-300 ${
                                     watch('status') === 'inactive'
-                                        ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
-                                        : 'text-text-muted hover:text-text-primary hover:bg-surface-elevated/50'
+                                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/25 scale-[1.02]'
+                                        : 'text-text-muted hover:text-text-primary hover:bg-white/40 dark:hover:bg-white/5'
                                 }`}
                             >
                                 <span className={`w-2 h-2 rounded-full ${watch('status') === 'inactive' ? 'bg-white animate-pulse' : 'bg-amber-500'}`} />
@@ -508,8 +521,8 @@ function PostForm({ post }) {
                     </div>
                     <Button
                         type="submit"
-                        bgColor={post ? "bg-emerald-600" : undefined}
-                        className="w-full"
+                        bgColor={post ? "bg-emerald-600 hover:bg-emerald-500" : undefined}
+                        className="w-full shadow-lg shadow-primary-500/25 dark:shadow-pink-600/30 hover:shadow-xl hover:shadow-primary-500/40 dark:hover:shadow-pink-600/40 transition-all duration-300 hover:scale-[1.01] active:scale-[0.99]"
                         size="lg"
                         loading={loading}
                         loadingText={post ? "Updating story..." : "Publishing story..."}
@@ -521,4 +534,5 @@ function PostForm({ post }) {
         </div>
     )
 }
+
 export default PostForm
