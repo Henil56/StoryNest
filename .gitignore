@@ -31,4 +31,6 @@ dist-ssr
 # Local skills & design context
 .agents/
 .21st/
+.cursor/
+
 
