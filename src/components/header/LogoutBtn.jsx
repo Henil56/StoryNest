@@ -17,7 +17,7 @@ function LogoutBtn() {
 
   return (
     <button
-      className='group inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white/80 border border-white/20 rounded-xl hover:bg-rose-500/20 hover:text-rose-200 hover:border-rose-400/50 hover:shadow-md hover:shadow-rose-500/20 hover:-translate-y-0.5 transition-all duration-300 active:scale-95'
+      className='group inline-flex items-center gap-2 px-3.5 py-1.5 text-sm font-semibold text-white/80 border border-white/20 rounded-full hover:bg-rose-500/20 hover:text-rose-200 hover:border-rose-400/50 hover:shadow-md hover:shadow-rose-500/20 hover:-translate-y-0.5 transition-all duration-300 active:scale-95'
       onClick={logouthandler}
       aria-label="Sign out"
     >
