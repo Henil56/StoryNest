@@ -70,7 +70,7 @@ function Header() {
     <header 
       className={`sticky top-0 z-50 transition-all duration-500 ${
         isScrolled 
-          ? 'border-b border-white/15 dark:border-white/10 bg-[#17304D]/80 dark:bg-[#0a0314]/75 backdrop-blur-xl backdrop-saturate-150 shadow-[0_8px_32px_0_rgba(15,23,42,0.25)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]' 
+          ? 'border-b border-white/15 dark:border-white/10 bg-[#17304D]/85 dark:bg-[#0a0314]/75 backdrop-blur-xl backdrop-saturate-150 shadow-[0_8px_32px_0_rgba(15,23,42,0.25)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]' 
           : 'border-b border-transparent bg-[#17304D] dark:bg-[#0a0314]'
       }`}
     >
@@ -181,7 +181,7 @@ function Header() {
       </Container>
       {isScrolled && (
         <div 
-          className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-400/40 dark:via-primary-500/50 to-transparent pointer-events-none transition-opacity duration-500"
+          className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#87CEEB]/40 dark:via-primary-500/50 to-transparent pointer-events-none transition-opacity duration-500"
           aria-hidden="true"
         />
       )}
