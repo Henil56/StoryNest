@@ -6,7 +6,7 @@ export default function ThemeToggle() {
     if (savedTheme) {
       return savedTheme === 'dark'
     }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
+    return true
   })
 
   useEffect(() => {
