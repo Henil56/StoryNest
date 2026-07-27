@@ -46,8 +46,13 @@ function Home() {
         }
     };
 
-    // Calculate popularity score: views + (likes * 3)
+    // Calculate popularity score: Pinned Founder post stays at top!
     const sortedPosts = [...posts].sort((a, b) => {
+        const isAPinned = a.slug === 'welcome-to-storynest-founder-letter' || a.slug?.includes('welcome-to-storynest') || a.authorName?.includes('Founder') || a.isPinned;
+        const isBPinned = b.slug === 'welcome-to-storynest-founder-letter' || b.slug?.includes('welcome-to-storynest') || b.authorName?.includes('Founder') || b.isPinned;
+        if (isAPinned && !isBPinned) return -1;
+        if (!isAPinned && isBPinned) return 1;
+
         const scoreA = (a.views || 0) + ((a.likes || []).length * 3);
         const scoreB = (b.views || 0) + ((b.likes || []).length * 3);
         return scoreB - scoreA;

@@ -84,16 +84,25 @@ function AllPost() {
             )
         }
 
-        // Sort
-        if (sortBy === 'Latest') {
-            result.sort((a, b) => new Date(b.$createdAt) - new Date(a.$createdAt))
-        } else if (sortBy === 'Oldest') {
-            result.sort((a, b) => new Date(a.$createdAt) - new Date(b.$createdAt))
-        } else if (sortBy === 'Most Liked') {
-            result.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0))
-        } else if (sortBy === 'Most Viewed') {
-            result.sort((a, b) => (b.views || 0) - (a.views || 0))
-        }
+        // Sort: Pinned Founder post ALWAYS stays pinned at top of list!
+        result.sort((a, b) => {
+            const isAPinned = a.slug === 'welcome-to-storynest-founder-letter' || a.slug?.includes('welcome-to-storynest') || a.authorName?.includes('Founder') || a.isPinned;
+            const isBPinned = b.slug === 'welcome-to-storynest-founder-letter' || b.slug?.includes('welcome-to-storynest') || b.authorName?.includes('Founder') || b.isPinned;
+
+            if (isAPinned && !isBPinned) return -1;
+            if (!isAPinned && isBPinned) return 1;
+
+            if (sortBy === 'Latest') {
+                return new Date(b.$createdAt) - new Date(a.$createdAt)
+            } else if (sortBy === 'Oldest') {
+                return new Date(a.$createdAt) - new Date(b.$createdAt)
+            } else if (sortBy === 'Most Liked') {
+                return (b.likes?.length || 0) - (a.likes?.length || 0)
+            } else if (sortBy === 'Most Viewed') {
+                return (b.views || 0) - (a.views || 0)
+            }
+            return 0;
+        })
 
         return result
     }, [posts, searchQuery, selectedCategory, sortBy])

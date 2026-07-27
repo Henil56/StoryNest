@@ -120,6 +120,11 @@ function PostCard({ $id, title, featuredImage, category, content, views, likes =
           </div>
           <div className='p-5 flex flex-col flex-1'>
             <div className="flex items-center gap-2 flex-wrap">
+              {($id === 'welcome-to-storynest-founder-letter' || userId === 'author_storynest_founder' || authorName?.includes('Founder') || title?.includes('Welcome to StoryNest')) && (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300 border border-rose-500/30 flex items-center gap-1 shadow-sm">
+                  📌 Pinned Story
+                </span>
+              )}
               {category && <Badge>{category}</Badge>}
               {status === 'inactive' && (
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/30">
